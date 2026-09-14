@@ -17,7 +17,7 @@ animation.json
 ```
 
 - **Text in:** auditable, patchable animation instructions.
-- **Artifact out:** an actual looping GIF.
+- **Artifact out:** an actual looping GIF plus a PNG poster frame for interfaces that cannot display animation.
 - **GitHub as boundary:** the workflow defines the granted capability.
 - **Git as ledger:** the specification and result remain attributable.
 
@@ -50,6 +50,16 @@ The JSON format is intentionally tiny:
 ```
 
 Coordinates are grid coordinates. Every frame must contain at least two edge-connected cells: single cells do not count; only animals do.
+
+## Display contract
+
+Each render creates both `name.gif` and `name.png`. The PNG is the first-frame poster for interfaces that can display remote images but cannot animate remote GIFs. Make the poster clickable:
+
+```markdown
+[![Tap to play](https://raw.githubusercontent.com/OWNER/REPO/main/out/name.png)](https://github.com/OWNER/REPO/raw/refs/heads/main/out/name.gif)
+```
+
+Creation and presentation are separate capabilities. GF ships both sides of that boundary.
 
 ## Rusher philosophy
 
