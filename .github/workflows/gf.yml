@@ -3,9 +3,9 @@ name: GF — render GIF
 on:
   workflow_dispatch:
   push:
+    branches: [main]
     paths:
       - "gf.py"
-      - "pet.py"
       - "requirements.txt"
       - "examples/**"
       - ".github/workflows/gf.yml"
@@ -32,9 +32,6 @@ jobs:
       - name: Rush
         run: python gf.py examples/lattice-animal.json out/lattice-animal.gif
 
-      - name: Render the pet sheet
-        run: python pet.py examples/lattice-animal.json out/lattice-animal-pet.png
-
       - name: Keep the drop
         uses: actions/upload-artifact@v4
         with:
@@ -42,21 +39,14 @@ jobs:
           path: |
             out/lattice-animal.gif
             out/lattice-animal.png
-            out/lattice-animal.gif.b64
-            out/lattice-animal.png.b64
-            out/lattice-animal-pet.png
-            out/lattice-animal-frame-*.png
-            out/lattice-animal-frame-*.png.b64
           if-no-files-found: error
 
       - name: Put the drop in the ledger
+        if: github.ref == 'refs/heads/main'
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add out/lattice-animal.gif out/lattice-animal.png \
-            out/lattice-animal.gif.b64 out/lattice-animal.png.b64 \
-            out/lattice-animal-pet.png out/lattice-animal-frame-*.png \
-            out/lattice-animal-frame-*.png.b64
+          git add out/lattice-animal.gif out/lattice-animal.png
           git diff --cached --quiet && exit 0
           git commit -m "Render lattice animal [skip ci]"
           git push

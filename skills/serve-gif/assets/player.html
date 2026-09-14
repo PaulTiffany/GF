@@ -1,0 +1,63 @@
+<div id="__ROOT__">
+  <img data-image src="__FIRST_FRAME__" alt="__ALT__">
+  <div class="viz-row">
+    <button class="btn" data-toggle type="button" aria-pressed="false">Play</button>
+    <span class="text-small tabular-nums" data-counter aria-hidden="true"></span>
+    <span class="sr-only" data-status aria-live="polite">Paused</span>
+  </div>
+  <script type="application/json" data-frames>__PAYLOAD__</script>
+</div>
+<style>
+  #__ROOT__ { width: 100%; }
+  #__ROOT__ [data-image] { display: block; width: min(100%, 320px); height: auto;
+    margin-inline: auto; image-rendering: pixelated; }
+</style>
+<script>
+(() => {
+  const root = document.getElementById('__ROOT__');
+  const picture = root.querySelector('[data-image]');
+  const toggle = root.querySelector('[data-toggle]');
+  const counter = root.querySelector('[data-counter]');
+  const status = root.querySelector('[data-status]');
+  const {frames, loop} = JSON.parse(root.querySelector('[data-frames]').textContent);
+  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+  let index = 0, completed = 0, timer = null, ended = false;
+  frames.forEach(frame => { const image = new Image(); image.src = frame.src; });
+  const show = () => {
+    picture.src = frames[index].src;
+    counter.textContent = `${index + 1} / ${frames.length}`;
+  };
+  const pause = () => {
+    clearTimeout(timer);
+    timer = null;
+    toggle.textContent = ended ? 'Replay' : 'Play';
+    toggle.setAttribute('aria-pressed', 'false');
+    status.textContent = ended ? 'Finished' : 'Paused';
+  };
+  const step = () => {
+    if (!root.isConnected || document.hidden) { pause(); return; }
+    if (index === frames.length - 1) {
+      completed += 1;
+      if (loop !== 0 && completed >= (loop === null ? 1 : loop + 1)) {
+        ended = true; pause(); return;
+      }
+    }
+    index = (index + 1) % frames.length;
+    show();
+    timer = setTimeout(step, frames[index].ms);
+  };
+  const play = () => {
+    if (timer !== null) return;
+    if (ended) { index = 0; completed = 0; ended = false; show(); }
+    toggle.textContent = 'Pause';
+    toggle.setAttribute('aria-pressed', 'true');
+    status.textContent = 'Playing';
+    timer = setTimeout(step, frames[index].ms);
+  };
+  toggle.addEventListener('click', () => timer === null ? play() : pause());
+  document.addEventListener('visibilitychange', () => { if (document.hidden) pause(); });
+  reducedMotion.addEventListener('change', () => { if (reducedMotion.matches) pause(); });
+  show();
+  if (!reducedMotion.matches && !document.hidden) play();
+})();
+</script>
