@@ -61,6 +61,22 @@ Each render creates both `name.gif` and `name.png`. The PNG is the first-frame p
 
 Creation and presentation are separate capabilities. GF ships both sides of that boundary.
 
+## Native chat transport
+
+Each render also creates `name.gif.b64` and `name.png.b64`. These are
+UTF-8 sidecars containing the same artifact encoded as base64. An authorized
+GitHub connector can fetch a sidecar as text and submit it to a client's native
+image channel as a data URL:
+
+```text
+data:image/gif;base64,<contents of out/name.gif.b64>
+```
+
+This is intended for small, repository-built media when remote image embedding
+is unreliable. Use the certified URL as the fallback for larger files. Do not
+use the sidecar path for secrets, private data, or untrusted arbitrary content.
+
+
 ## Certified serving
 
 The **GF — certified serving** workflow publishes a browser player and canonical
