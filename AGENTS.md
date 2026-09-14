@@ -18,6 +18,8 @@ GitHub Actions.
 - Publish a stable player, media URLs, and `manifest.json` through GitHub Pages.
 - Probe deployed status, MIME types, and SHA-256 hashes before calling the
   presentation endpoint certified.
+- Run `pet.py` to produce `out/lattice-animal-pet.png`, a deterministic
+  ChatGPT Pets v1 sprite sheet with transparent, fixed-size frame cells.
 
 Prefer text specifications and deterministic rendering. Keep the build small,
 auditable, and purpose-built. Do not add a general agent runtime when a narrow
@@ -67,6 +69,14 @@ whether the client displays it as a separate observation.
 
 Do not introduce Azure, another CDN, cloud credentials, or further infrastructure
 without an explicit human request and a defined test.
+
+## ChatGPT Pet boundary
+
+A Pets sheet is a native animation input, not an ordinary inline image. GF may
+render and validate the sheet in GitHub Actions, but creating or selecting a pet
+requires an explicit user-scoped ChatGPT Pets upload. Do not create, replace,
+select, share, or delete a pet without the user's request. Preserve the source
+specification and generated sheet in Git as provenance.
 
 ## Contribution protocol
 
