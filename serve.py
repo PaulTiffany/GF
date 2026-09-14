@@ -12,7 +12,6 @@ import urllib.error
 import urllib.request
 from pathlib import Path
 
-from PIL import Image
 
 MEDIA = {
     "lattice-animal.png": "image/png",
@@ -25,6 +24,8 @@ def digest(data: bytes) -> str:
 
 
 def build(source: Path, site: Path, base_url: str, commit: str) -> None:
+    from PIL import Image
+
     site.mkdir(parents=True, exist_ok=True)
     assets = {}
 
