@@ -1,125 +1,112 @@
 # GF
 
-> Good fight.
+> Good fight. Small build. Clean execution. Show the result.
 
-**GF** is Old School RuneScape rusher architecture for GPT artifact generation: keep the build small, expose one decisive capability, and let GitHub Actions land the hit.
+GF is a collection of narrow, reproducible moves for tool-equipped assistants.
+The first build delivers an existing animated GIF inside a compatible chat.
+The teaching style borrows from OSRS rusher build guides: name the requirements,
+teach the sequence, identify the matchup, and show what actually landed.
 
-The first rush is GIF generation. A GPT edits a tiny JSON animation spec. GitHub renders it deterministically and commits the finished GIF. No binary-generation interface is required.
+## Build 01: serve a GIF
 
-## The build
+**Result:** an animation the user can see in the conversation, without manually
+downloading and re-uploading it.
 
-```text
-animation.json
-      ↓
-   gf.py
-      ↓
- output.gif
-```
+| Equip | Why it matters |
+| --- | --- |
+| Existing GIF | Reuse the finished animation. |
+| File-capable runtime | Materialize and verify the actual bytes. |
+| Python 3.10+ and Pillow | Run the small preparation helper. |
+| Chat attachment surface | Present the resulting file to the user. |
+| Optional HTML visualization surface | Play existing frames with pause/resume controls. |
 
-- **Text in:** auditable, patchable animation instructions.
-- **Artifact out:** an actual looping GIF plus a PNG poster frame for interfaces that cannot display animation.
-- **GitHub as boundary:** the workflow defines the granted capability.
-- **Git as ledger:** the specification and result remain attributable.
-
-## Quick start
-
-Edit `examples/lattice-animal.json`, commit it, and run **GF — render GIF** from the Actions tab. A push that changes an example also runs automatically.
-
-Locally:
+**Sequence:** obtain bytes → verify and stage → attach → check visible playback.
 
 ```bash
-python -m pip install Pillow
+python -m pip install --requirement requirements.txt
+python skills/serve-gif/scripts/prepare_gif.py out/lattice-animal.gif \
+  --output /workspace/gif/lattice-animal.gif \
+  --alt "Seven connected grid cells dancing"
+```
+
+The helper returns the media facts and `markdown_image`. In a compatible chat,
+the assistant emits that value as Markdown, outside a code fence:
+
+```markdown
+![Seven connected grid cells dancing](sandbox:/workspace/gif/lattice-animal.gif)
+```
+
+Use the host's actual writable workspace and file persistence rules. The helper
+does not upload files or modify the host. It accepts a local GIF or an exact
+member of a downloaded ZIP, preserves the GIF bytes, and refuses to overwrite
+different content. For an optional embedded player, add
+`--player /workspace/lattice-player.html` and present the fragment through the
+host's visualization renderer.
+
+**Matchup:** this needs runtime and presentation tools. Instructions alone do
+not add them to an ordinary phone chat. GitHub is an optional source/build
+adapter; it is not required when the file is already available locally.
+
+**Proof:** in the GF phone conversation on 2026-09-14, the user confirmed both
+the real file attachment and an embedded frame player worked. That is a useful
+reproduction result, not a guarantee for all ChatGPT phone sessions. See the
+[probe record](skills/serve-gif/references/phone-evidence.md), including failed
+remote embeds and the correction to our earlier base64 claims.
+
+## Transfer the build
+
+The self-contained [serve-gif skill](skills/serve-gif/SKILL.md) includes the
+instructions, helper, player template, source adapter, evidence, and MIT license.
+Copy the `skills/serve-gif` folder into a skill-capable environment using that
+host's installation procedure. Keeping it in this repository does not install
+it into every ChatGPT session. A tool-equipped assistant can also read the
+instructions and run the helper directly.
+
+For the next micro-tool, teach the same compact build card:
+
+1. **Target:** one observable user outcome.
+2. **Equip:** tools, inputs, permissions, and client requirements.
+3. **Execute:** the shortest reproducible sequence and reusable helper.
+4. **Matchup:** where the sequence works and what blocks it.
+5. **Proof:** artifact checks and the user's observed result, kept distinct.
+
+## Optional renderer and GitHub adapter
+
+To make the included lattice animal from its text specification:
+
+```bash
 python gf.py examples/lattice-animal.json out/lattice-animal.gif
 ```
 
-The JSON format is intentionally tiny:
+Every frame requires at least two distinct, edge-connected cells. The renderer
+writes a GIF and first-frame PNG. The **GF — render GIF** Action does the same
+on relevant pushes to `main` or manual dispatch, uploads those two artifacts,
+and records them in Git when running on `main`.
 
-```json
-{
-  "canvas": [320, 320],
-  "cell_size": 48,
-  "duration_ms": 220,
-  "frames": [
-    {
-      "cells": [
-        {"x": 1, "y": 1, "color": "#ffcc33", "face": true}
-      ]
-    }
-  ]
-}
-```
+The separate **GF — certified serving** Action publishes the
+[browser player](https://paultiffany.github.io/GF/) and
+[manifest](https://paultiffany.github.io/GF/manifest.json). Its HTTP/MIME/hash
+probe certifies the endpoint only. It cannot certify inline phone playback.
+See the [GitHub adapter](skills/serve-gif/references/github.md) for retrieval.
 
-Coordinates are grid coordinates. Every frame must contain at least two edge-connected cells: single cells do not count; only animals do.
+`pet.py` remains an optional historical Pets v1 sheet exporter. It is outside
+the default GIF workflow; producing a sheet does not install or select a pet.
+Current Pets compatibility must be checked separately if requested.
 
-## Display contract
-
-Each render creates both `name.gif` and `name.png`. The PNG is the first-frame poster for interfaces that can display remote images but cannot animate remote GIFs. Make the poster clickable:
-
-```markdown
-[![Tap to play](https://raw.githubusercontent.com/OWNER/REPO/main/out/name.png)](https://github.com/OWNER/REPO/raw/refs/heads/main/out/name.gif)
-```
-
-Creation and presentation are separate capabilities. GF ships both sides of that boundary.
-
-## Native chat transport
-
-Each render also creates `name.gif.b64` and `name.png.b64`. These are
-UTF-8 sidecars containing the same artifact encoded as base64. An authorized
-GitHub connector can fetch a sidecar as text and submit it to a client's native
-image channel as a data URL:
-
-```text
-data:image/gif;base64,<contents of out/name.gif.b64>
-```
-
-This is intended for small, repository-built media when remote image embedding
-is unreliable. Use the certified URL as the fallback for larger files. Do not
-use the sidecar path for secrets, private data, or untrusted arbitrary content.
-
-
-## Certified serving
-
-The **GF — certified serving** workflow publishes a browser player and canonical
-media endpoints through GitHub Pages:
-
-- Player: https://paultiffany.github.io/GF/
-- PNG: https://paultiffany.github.io/GF/lattice-animal.png
-- GIF: https://paultiffany.github.io/GF/lattice-animal.gif
-- Manifest: https://paultiffany.github.io/GF/manifest.json
-
-The manifest records the build commit, SHA-256 digest, byte length, MIME type,
-dimensions, and GIF frame count. After deployment, `serve.py probe` demands a
-direct `200 OK`, correct content types, and bytes matching the manifest. The
-workflow does not certify that every client will display the media; it certifies
-the endpoint so client behavior can be tested precisely.
-
-## ChatGPT Pet rush
-
-GF can also compile the same lattice-animal specification into a ChatGPT Pets
-v1 sprite sheet:
+## Checks and contributions
 
 ```bash
-python pet.py examples/lattice-animal.json out/lattice-animal-pet.png
+python -m unittest discover -s tests -v
+node --test tests/player.test.cjs
 ```
 
-The output is a 1536×1872 transparent PNG arranged as 8 columns by 9 rows of
-192×208 cells. It fills the required v1 frame counts
-`6, 8, 8, 4, 5, 8, 6, 6, 6` and leaves unused cells transparent. GitHub
-renders and records the sheet; creating and selecting the user-scoped animated
-pet remains a separate, explicit ChatGPT action.
-
-## Rusher philosophy
-
-A rusher is not a maxed account. It is a purpose-built configuration that keeps irrelevant levels low and concentrates power where it matters. GF applies that culture to machine capabilities:
-
-1. Grant one narrow move.
-2. Make the move reproducible.
-3. Test the boundary.
-4. Land the artifact.
-5. Say “gf.”
-
-This project is inspired by player-created Old School RuneScape rusher culture. It is unofficial, uses no game assets, and is not affiliated with or endorsed by Jagex. See [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
+The checks exercise preparation, byte preservation, archive handling, and player
+controls. Phone rendering still needs client evidence. Follow [AGENTS.md](AGENTS.md):
+agents open draft PRs; a human reads the diff and completes the readback.
 
 ## License
 
-Code and original project documentation are released under the [MIT License](LICENSE). Example specifications and generated outputs authored in this repository are covered by the same license unless a file states otherwise.
+Code, original documentation, example specifications, and repository-authored
+outputs are [MIT licensed](LICENSE), unless a file says otherwise. GF uses no
+game assets and is not affiliated with Jagex. See
+[THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
