@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import argparse
+import base64
 import json
 from collections import deque
 from pathlib import Path
@@ -81,6 +82,11 @@ def render(source: Path, destination: Path) -> None:
         disposal=2,
         optimize=True,
     )
+
+    for artifact in (destination, preview):
+        sidecar = artifact.with_suffix(f"{artifact.suffix}.b64")
+        payload = base64.b64encode(artifact.read_bytes()).decode("ascii")
+        sidecar.write_text(f"{payload}\n", encoding="ascii")
 
 
 def main() -> None:
