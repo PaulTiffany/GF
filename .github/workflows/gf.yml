@@ -38,13 +38,16 @@ jobs:
           path: |
             out/lattice-animal.gif
             out/lattice-animal.png
+            out/lattice-animal.gif.b64
+            out/lattice-animal.png.b64
           if-no-files-found: error
 
       - name: Put the drop in the ledger
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add out/lattice-animal.gif out/lattice-animal.png
+          git add out/lattice-animal.gif out/lattice-animal.png \
+            out/lattice-animal.gif.b64 out/lattice-animal.png.b64
           git diff --cached --quiet && exit 0
           git commit -m "Render lattice animal [skip ci]"
           git push
