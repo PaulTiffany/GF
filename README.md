@@ -93,6 +93,21 @@ direct `200 OK`, correct content types, and bytes matching the manifest. The
 workflow does not certify that every client will display the media; it certifies
 the endpoint so client behavior can be tested precisely.
 
+## ChatGPT Pet rush
+
+GF can also compile the same lattice-animal specification into a ChatGPT Pets
+v1 sprite sheet:
+
+```bash
+python pet.py examples/lattice-animal.json out/lattice-animal-pet.png
+```
+
+The output is a 1536×1872 transparent PNG arranged as 8 columns by 9 rows of
+192×208 cells. It fills the required v1 frame counts
+`6, 8, 8, 4, 5, 8, 6, 6, 6` and leaves unused cells transparent. GitHub
+renders and records the sheet; creating and selecting the user-scoped animated
+pet remains a separate, explicit ChatGPT action.
+
 ## Rusher philosophy
 
 A rusher is not a maxed account. It is a purpose-built configuration that keeps irrelevant levels low and concentrates power where it matters. GF applies that culture to machine capabilities:
