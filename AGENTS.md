@@ -32,12 +32,15 @@ As observed in the ChatGPT Android interface on 2026-09-14:
 - ChatGPT can return an ordinary clickable link to that file.
 - ChatGPT did not reliably animate a remote GitHub GIF inline.
 - ChatGPT also did not reliably display the remote GitHub PNG poster inline.
+- The same PNG and GIF published at certified GitHub Pages endpoints still
+  produced no inline image on the ChatGPT Android client.
+- A second direct-GIF attempt from GitHub Pages also produced no inline image.
 - Native ChatGPT-generated images and remote GitHub-hosted images travel through
   different presentation paths.
 
 Therefore, do not claim that a Markdown image or clickable poster will render in
 the ChatGPT phone client merely because the underlying URL is valid. Serve a
-plain link as the reliable fallback.
+plain link to the GitHub Pages browser player as the reliable phone fallback.
 
 Treat this as a client presentation boundary, not a GIF-generation failure.
 GitHub Pages is the repository-owned serving experiment authorized for this
