@@ -40,6 +40,24 @@ the ChatGPT phone client merely because the underlying URL is valid. Serve a
 plain link as the reliable fallback.
 
 Treat this as a client presentation boundary, not a GIF-generation failure.
+
+## Native chat transport
+
+For small media, GF also writes an ASCII base64 sidecar beside each artifact:
+`name.gif.b64` and `name.png.b64`. An authorized GitHub connector can read
+these UTF-8 files and pass their contents to a chat client's native image
+channel as `data:<mime>;base64,<payload>`. This avoids relying on remote
+Markdown image loading while keeping GitHub as the audited capability boundary.
+
+Treat sidecars as a narrow transport, not a general blob tunnel:
+
+- Generate them only from repository-built artifacts.
+- Keep them small enough for connector and conversation limits.
+- Never encode secrets, credentials, private data, or untrusted payloads.
+- Verify provenance from the repository ref and use the binary artifact's
+  manifest digest where the client can decode and hash it.
+- Fall back to the certified URL for media too large for native transport.
+
 GitHub Pages is the repository-owned serving experiment authorized for this
 boundary. A successful serving probe certifies the URL, not the client. Record
 whether the client displays it as a separate observation.
