@@ -15,6 +15,9 @@ GitHub Actions.
 - Produce `out/lattice-animal.gif` as the animated artifact.
 - Produce `out/lattice-animal.png` as its static first-frame poster.
 - Upload both files as workflow artifacts and commit them to the repository.
+- Publish a stable player, media URLs, and `manifest.json` through GitHub Pages.
+- Probe deployed status, MIME types, and SHA-256 hashes before calling the
+  presentation endpoint certified.
 
 Prefer text specifications and deterministic rendering. Keep the build small,
 auditable, and purpose-built. Do not add a general agent runtime when a narrow
@@ -36,9 +39,13 @@ Therefore, do not claim that a Markdown image or clickable poster will render in
 the ChatGPT phone client merely because the underlying URL is valid. Serve a
 plain link as the reliable fallback.
 
-Treat this as a client presentation boundary, not a GIF-generation failure. Do
-not introduce Azure, another CDN, cloud credentials, or new infrastructure just
-to work around it without an explicit human request and a defined test.
+Treat this as a client presentation boundary, not a GIF-generation failure.
+GitHub Pages is the repository-owned serving experiment authorized for this
+boundary. A successful serving probe certifies the URL, not the client. Record
+whether the client displays it as a separate observation.
+
+Do not introduce Azure, another CDN, cloud credentials, or further infrastructure
+without an explicit human request and a defined test.
 
 ## Contribution protocol
 

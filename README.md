@@ -61,6 +61,22 @@ Each render creates both `name.gif` and `name.png`. The PNG is the first-frame p
 
 Creation and presentation are separate capabilities. GF ships both sides of that boundary.
 
+## Certified serving
+
+The **GF — certified serving** workflow publishes a browser player and canonical
+media endpoints through GitHub Pages:
+
+- Player: https://paultiffany.github.io/GF/
+- PNG: https://paultiffany.github.io/GF/lattice-animal.png
+- GIF: https://paultiffany.github.io/GF/lattice-animal.gif
+- Manifest: https://paultiffany.github.io/GF/manifest.json
+
+The manifest records the build commit, SHA-256 digest, byte length, MIME type,
+dimensions, and GIF frame count. After deployment, `serve.py probe` demands a
+direct `200 OK`, correct content types, and bytes matching the manifest. The
+workflow does not certify that every client will display the media; it certifies
+the endpoint so client behavior can be tested precisely.
+
 ## Rusher philosophy
 
 A rusher is not a maxed account. It is a purpose-built configuration that keeps irrelevant levels low and concentrates power where it matters. GF applies that culture to machine capabilities:
