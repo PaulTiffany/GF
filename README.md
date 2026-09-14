@@ -2,10 +2,27 @@
 
 > Good fight. Small build. Clean execution. Show the result.
 
-GF is a collection of narrow, reproducible moves for tool-equipped assistants.
+GF is an executable build wiki for tool-equipped assistants.
 The first build delivers an existing animated GIF inside a compatible chat.
 The teaching style borrows from OSRS rusher build guides: name the requirements,
 teach the sequence, identify the matchup, and show what actually landed.
+
+## Find a build
+
+```bash
+python catalog.py list
+python catalog.py show serve-gif
+```
+
+The catalogue shows each build's requirements, inputs, outputs, effects, bounds,
+and evidence. It uses only Python's standard library and does not execute the
+listed helpers. Read the build, then run its helper within the requested task.
+
+The [architecture](ARCHITECTURE.md) explains how builds travel between hosts
+and how to contribute one using the [build template](templates/build.json).
+Small fixtures, explicit stopping conditions, and reviewed contributions keep
+experiments bounded. GitHub stores and checks the builds; the host supplies the
+runtime and permissions.
 
 ## Build 01: serve a GIF
 
@@ -70,6 +87,10 @@ For the next micro-tool, teach the same compact build card:
 4. **Matchup:** where the sequence works and what blocks it.
 5. **Proof:** artifact checks and the user's observed result, kept distinct.
 
+Each registered build includes a `build.json` declaration alongside its skill.
+The GIF package is the first complete example. Add builds through the process
+in [ARCHITECTURE.md](ARCHITECTURE.md#add-a-build).
+
 ## Optional renderer and GitHub adapter
 
 To make the included lattice animal from its text specification:
@@ -96,6 +117,7 @@ Current Pets compatibility must be checked separately if requested.
 ## Checks and contributions
 
 ```bash
+python catalog.py check
 python -m unittest discover -s tests -v
 node --test tests/player.test.cjs
 ```
