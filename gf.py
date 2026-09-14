@@ -70,6 +70,8 @@ def render(source: Path, destination: Path) -> None:
         raise ValueError("The animal needs at least one frame")
 
     destination.parent.mkdir(parents=True, exist_ok=True)
+    preview = destination.with_suffix(".png")
+    frames[0].save(preview, format="PNG", optimize=True)
     frames[0].save(
         destination,
         save_all=True,
