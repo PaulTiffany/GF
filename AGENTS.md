@@ -5,6 +5,8 @@
 These instructions apply to the entire repository. GF is a utility-level
 capability runner: keep each build narrow, auditable, and reproducible.
 
+- `catalog.json` indexes builds; `catalog.py` lists, inspects, and validates
+  metadata without executing build code. See `ARCHITECTURE.md` for the contract.
 - `gf.py` validates a grid-cell specification and renders a GIF plus PNG poster.
 - `skills/serve-gif/` packages the portable delivery instructions, local
   preparation helper, optional player, and evidence. Keep this folder usable
@@ -18,6 +20,23 @@ capability runner: keep each build narrow, auditable, and reproducible.
 Prefer existing media and deterministic helpers. Do not add a general agent
 runtime, service, or duplicate transport encoding when a narrow move suffices.
 Keep the bundled skill license when copying it independently.
+
+## Build contract and bounded experiments
+
+Register new builds with a package-local `build.json`: requirements, inputs,
+outputs, effects, enforced and operator-applied bounds, stopping conditions,
+and evidence. Keep referenced skill, helper, license, and evidence files inside
+the package. Declare repository checks in `catalog.json` and connect them to CI.
+
+Use small local fixtures for experiments. Include effects on other people's
+data, accounts, attention, or money in the task's authorized scope. Apply
+existing authorization without inventing new approval steps. A build's metadata
+does not grant authority or enforce isolation; check the helper and host.
+
+Keep catalogue inspection read-only. Do not add automatic installs, workflow
+dispatch, self-scheduling, or recursive execution to the catalogue. End failed
+attempts and retry only to address a concrete cause. Keep CI properties, client
+observations, and portability claims distinct, with their supporting evidence.
 
 ## Presentation contract
 

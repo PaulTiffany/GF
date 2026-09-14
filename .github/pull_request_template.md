@@ -2,6 +2,10 @@
 
 What narrow capability does this change equip, and what artifact should it land?
 
+For build changes, link the build declaration and relevant checks or observations.
+Describe changes to effects, resource bounds, and stopping conditions; say whose
+data, accounts, attention, or money are involved if the change reaches others.
+
 ## Attribution
 
 Tick exactly one:

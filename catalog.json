@@ -1,0 +1,9 @@
+{
+  "schema": 1,
+  "builds": [
+    {
+      "package": "skills/serve-gif",
+      "checks": ["tests/test_prepare_gif.py", "tests/player.test.cjs"]
+    }
+  ]
+}

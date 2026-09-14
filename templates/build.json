@@ -1,0 +1,18 @@
+{
+  "schema": 1,
+  "id": "your-build",
+  "summary": "Describe one observable user outcome.",
+  "skill": "SKILL.md",
+  "entrypoint": "scripts/your_helper.py",
+  "license": "LICENSE",
+  "requires": ["Name the runtime, dependencies, and host capabilities actually needed."],
+  "inputs": ["Name the required inputs and who supplies them."],
+  "outputs": ["Name the artifact or result the user receives."],
+  "effects": ["local-read", "local-write"],
+  "bounds": {
+    "enforced": [],
+    "operator": ["State the task's resource budget and authorized scope."]
+  },
+  "stop_when": ["State a concrete completion condition and a bounded failure condition."],
+  "evidence": ["references/evidence.md"]
+}

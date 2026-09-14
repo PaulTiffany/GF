@@ -1,0 +1,43 @@
+{
+  "schema": 1,
+  "id": "serve-gif",
+  "summary": "Prepare an existing GIF for a chat attachment, with an optional frame player.",
+  "skill": "SKILL.md",
+  "entrypoint": "scripts/prepare_gif.py",
+  "license": "LICENSE",
+  "requires": [
+    "Python 3.10+ and Pillow",
+    "A writable workspace containing the source media",
+    "A compatible chat attachment surface for delivery",
+    "An HTML visualization surface only when the optional player is requested"
+  ],
+  "inputs": [
+    "One local animated GIF, or one exact GIF member of a local ZIP",
+    "An output GIF path; optional player path, alt text, and expected GIF SHA-256"
+  ],
+  "outputs": [
+    "The original GIF bytes at the requested output path",
+    "JSON media facts and attachment Markdown on stdout",
+    "An embedded HTML frame-player fragment when requested"
+  ],
+  "effects": ["local-read", "local-write"],
+  "bounds": {
+    "enforced": [
+      "GIF payload at most 20 MiB",
+      "At most 16 million decoded pixels across frames",
+      "Optional player at most 1 MiB",
+      "Existing output files with different content are not overwritten"
+    ],
+    "operator": [
+      "Use only the requested source and output paths",
+      "Include any remote download or account storage step in the authorized task scope",
+      "Confirm the host can present the file before claiming delivery"
+    ]
+  },
+  "stop_when": [
+    "The requested files are prepared, or the helper reports an error",
+    "A required runtime or presentation capability is absent",
+    "A retry would repeat a failed presentation route without new evidence"
+  ],
+  "evidence": ["references/phone-evidence.md"]
+}
