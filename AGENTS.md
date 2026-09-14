@@ -14,6 +14,8 @@ GitHub Actions.
 - Run `gf.py` to validate edge connectivity and render the animation.
 - Produce `out/lattice-animal.gif` as the animated artifact.
 - Produce `out/lattice-animal.png` as its static first-frame poster.
+- Produce numbered `out/lattice-animal-frame-XX.png` files and base64
+  sidecars for deterministic, ordered native presentation in chat threads.
 - Upload both files as workflow artifacts and commit them to the repository.
 - Publish a stable player, media URLs, and `manifest.json` through GitHub Pages.
 - Probe deployed status, MIME types, and SHA-256 hashes before calling the
@@ -45,6 +47,10 @@ the ChatGPT phone client merely because the underlying URL is valid. Serve a
 plain link to the GitHub Pages browser player as the reliable phone fallback.
 
 Treat this as a client presentation boundary, not a GIF-generation failure.
+A confirmed alternative is to fetch pre-rendered PNG sidecars through the
+authorized GitHub connector and emit them through the native generated-image
+presentation wrapper. This displays without regeneration or manual transfer.
+Ordered frames are a thread-native sequence, not timed GIF playback.
 
 ## Native chat transport
 

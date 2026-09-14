@@ -73,6 +73,11 @@ def render(source: Path, destination: Path) -> None:
     destination.parent.mkdir(parents=True, exist_ok=True)
     preview = destination.with_suffix(".png")
     frames[0].save(preview, format="PNG", optimize=True)
+    frame_paths = []
+    for index, frame in enumerate(frames):
+        frame_path = destination.with_name(f"{destination.stem}-frame-{index:02d}.png")
+        frame.save(frame_path, format="PNG", optimize=True)
+        frame_paths.append(frame_path)
     frames[0].save(
         destination,
         save_all=True,
@@ -83,7 +88,7 @@ def render(source: Path, destination: Path) -> None:
         optimize=True,
     )
 
-    for artifact in (destination, preview):
+    for artifact in (destination, preview, *frame_paths):
         sidecar = artifact.with_suffix(f"{artifact.suffix}.b64")
         payload = base64.b64encode(artifact.read_bytes()).decode("ascii")
         sidecar.write_text(f"{payload}\n", encoding="ascii")
