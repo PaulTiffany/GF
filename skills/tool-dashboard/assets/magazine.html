@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>GF magazine</title>
+    <!-- GF_STYLE -->
+  </head>
+  <body>
+    <main id="magazine">
+      <div class="eyebrow">Reading desk</div>
+      <h1 id="title">Opening your edition…</h1>
+      <div id="topics" class="row" role="group" aria-label="Interests"></div>
+      <article class="story" aria-label="Current story">
+        <div class="row spread">
+          <span id="topic" class="eyebrow"></span
+          ><span id="position" class="muted"></span>
+        </div>
+        <h2 id="headline">Waiting for stories</h2>
+        <p id="summary" class="summary"></p>
+        <label class="check"
+          ><input id="save" type="checkbox" disabled />Keep this story</label
+        >
+      </article>
+      <div class="row spread">
+        <button id="previous" type="button" disabled>Previous</button
+        ><button id="next" type="button" disabled>Next</button>
+      </div>
+      <p>
+        <label for="batch"
+          >Next batch: <output id="batch-value">4</output> stories</label
+        >
+      </p>
+      <input id="batch" type="range" min="1" max="8" value="4" disabled />
+      <div class="footer row">
+        <button class="primary" id="continue" type="button" disabled>
+          Continue</button
+        ><button id="cancel" type="button" disabled>Cancel</button
+        ><span id="status" role="status" aria-live="polite">Connecting…</span>
+      </div>
+    </main>
+    <!-- GF_BRIDGE -->
+    <script>
+      (() => {
+        const $ = (id) => document.getElementById(id);
+        let data = { topics: [], articles: [] },
+          topics = new Set(),
+          saved = new Set(),
+          index = 0,
+          locked = true;
+        const filtered = () => data.articles.filter((a) => topics.has(a.topic));
+        const reader = GFDashboard.connect({
+          onOpen(panel) {
+            data = panel.data;
+            topics = new Set(data.topics);
+            $("title").textContent = panel.title;
+            $("topics").replaceChildren();
+            for (const topic of data.topics) {
+              const b = document.createElement("button");
+              b.type = "button";
+              b.textContent = topic;
+              b.setAttribute("aria-pressed", "true");
+              b.onclick = () => {
+                if (locked) return;
+                topics.has(topic) ? topics.delete(topic) : topics.add(topic);
+                b.setAttribute("aria-pressed", String(topics.has(topic)));
+                index = 0;
+                render();
+              };
+              $("topics").append(b);
+            }
+            render();
+          },
+          onStatus(status) {
+            locked = status !== "ready";
+            const labels = {
+              ready: "Choose what comes next",
+              submitting: "Returning your selection…",
+              submitted: "Selection returned",
+              cancelled: "Cancelled",
+              expired: "Dashboard expired",
+              unconfirmed: "Delivery unconfirmed",
+              unavailable: "Dashboard connection unavailable",
+            };
+            $("status").textContent = labels[status] || status;
+            document
+              .querySelectorAll("button,input")
+              .forEach((el) => (el.disabled = locked));
+            render();
+          },
+          onTheme(theme) {
+            if (theme === "dark" || theme === "light")
+              document.documentElement.style.colorScheme = theme;
+          },
+        });
+        function render() {
+          const items = filtered();
+          index = Math.min(index, Math.max(0, items.length - 1));
+          const article = items[index];
+          $("headline").textContent = article?.title || "No matching stories";
+          $("summary").textContent = article?.summary || "";
+          $("topic").textContent = article?.topic || "";
+          $("position").textContent = items.length
+            ? `${index + 1} / ${items.length}`
+            : "0 / 0";
+          $("save").checked = article ? saved.has(article.id) : false;
+          $("save").disabled = locked || !article;
+          $("previous").disabled = locked || index === 0;
+          $("next").disabled = locked || index >= items.length - 1;
+        }
+        $("previous").onclick = () => {
+          if (!locked) {
+            index--;
+            render();
+          }
+        };
+        $("next").onclick = () => {
+          if (!locked) {
+            index++;
+            render();
+          }
+        };
+        $("save").onchange = () => {
+          const article = filtered()[index];
+          if (article && !locked) {
+            $("save").checked
+              ? saved.add(article.id)
+              : saved.delete(article.id);
+          }
+        };
+        $("batch").oninput = () => {
+          $("batch-value").value = $("batch").value;
+        };
+        $("continue").onclick = () => {
+          if (!locked)
+            reader.submit({
+              topics: [...topics],
+              saved: [...saved],
+              batch_size: Number($("batch").value),
+            });
+        };
+        $("cancel").onclick = () => reader.cancel();
+      })();
+    </script>
+  </body>
+</html>

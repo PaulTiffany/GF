@@ -1,0 +1,24 @@
+{
+  "name": "tool-dashboard",
+  "version": "0.1.0",
+  "description": "Custom touch dashboards that return structured selections to a waiting tool.",
+  "author": {
+    "name": "Paul Carver Tiffany III"
+  },
+  "repository": "https://github.com/PaulTiffany/GF",
+  "license": "MIT",
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Tool Dashboard",
+    "shortDescription": "Use custom dashboards during a tool workflow.",
+    "longDescription": "Open a magazine or file tray, hold a bounded tool call, and return the user's selected state through an MCP App callback. Requires a host with MCP Apps and concurrent UI tool calls.",
+    "developerName": "Paul Carver Tiffany III",
+    "category": "Productivity",
+    "capabilities": ["Interactive"],
+    "defaultPrompt": [
+      "Show the sample magazine dashboard.",
+      "Let me choose and arrange a working set of files."
+    ]
+  },
+  "mcpServers": "./.mcp.json"
+}

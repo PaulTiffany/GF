@@ -1,0 +1,9 @@
+{
+  "mcpServers": {
+    "gf-dashboard": {
+      "command": "node",
+      "args": ["scripts/server.mjs"],
+      "cwd": "."
+    }
+  }
+}

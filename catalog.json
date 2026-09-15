@@ -8,6 +8,10 @@
     {
       "package": "skills/check-model",
       "checks": ["tests/test_check_model.py"]
+    },
+    {
+      "package": "skills/tool-dashboard",
+      "checks": ["skills/tool-dashboard/tests/core.test.mjs", "skills/tool-dashboard/tests/mcp.test.mjs", "skills/tool-dashboard/tests/browser.test.mjs"]
     }
   ]
 }

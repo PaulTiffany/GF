@@ -1,0 +1,46 @@
+{
+  "schema": 1,
+  "id": "tool-dashboard",
+  "summary": "Return custom dashboard selections to a waiting tool call through an MCP App.",
+  "skill": "skills/tool-dashboard/SKILL.md",
+  "entrypoint": "scripts/server.mjs",
+  "license": "LICENSE",
+  "requires": [
+    "Node.js 20+ and pinned npm dependencies; build the browser bundle",
+    "A per-user stdio MCP host with MCP Apps and concurrent app tool callbacks"
+  ],
+  "inputs": [
+    "A title and bounded story/file metadata with stable IDs",
+    "User selections from the displayed dashboard",
+    "Optional reviewed local custom HTML"
+  ],
+  "outputs": [
+    "A custom magazine, file tray or supplied layout in a compatible host",
+    "A structured wait receipt: submitted state, pending, cancelled or expired"
+  ],
+  "effects": ["local-read", "local-write"],
+  "bounds": {
+    "enforced": [
+      "At most eight retained panels and one active wait per panel per process",
+      "Panel lifetime 5–180 seconds; each wait 1–45 seconds",
+      "Input data at most 64 KiB; submitted state at most 16 KiB; nesting at most eight levels",
+      "Built-in data at most 30 items and 12 topics; selected IDs and control ranges validated",
+      "Custom source and each built view at most 1 MiB",
+      "Accepted results cannot be replaced by a different repeated submission"
+    ],
+    "operator": [
+      "Use a separate server process per user/session; no shared public transport",
+      "Host must isolate app resources, keep app-only tools out of model context and enforce CSP",
+      "Treat selected state as untrusted task data, not authorization for unrelated actions",
+      "Review custom HTML and apply host resource limits; JSON bounds apply after transport parsing",
+      "Local writes are build outputs; runtime state is in memory; installation adds network reads"
+    ]
+  },
+  "stop_when": [
+    "The dashboard submits or cancels",
+    "The original panel expires or the host cancels the waiting call",
+    "The host lacks the resource or callback bridge; end the bounded probe",
+    "Invalid data or protocol error; do not synthesize a selection"
+  ],
+  "evidence": ["references/evidence.md", "references/setup.md", "references/ci-result.json"]
+}
