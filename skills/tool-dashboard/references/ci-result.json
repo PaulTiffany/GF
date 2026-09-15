@@ -1,0 +1,61 @@
+{
+  "tested_commit": "1dc1b9d248106f9b5ffe0d9ad9e673fc3541d5de",
+  "workflow_run": "https://github.com/PaulTiffany/GF/actions/runs/34990560997",
+  "dashboard_job": "https://github.com/PaulTiffany/GF/actions/runs/34990560997/job/104453796840",
+  "observed_at": "2026-09-15",
+  "conclusion": "success",
+  "backend_tests_passed": 8,
+  "browser_tests_passed": 3,
+  "artifact_sha256": "7a289bf2e1db9258e2810087267c2d97151e44389dda0fec04c30ef5c3c14053",
+  "screenshots_inspected": true,
+  "phone_observed": false,
+  "scenarios": {
+    "magazine-submitted": {
+      "environment": "headless Chromium with official MCP AppBridge; simulated touch",
+      "browser": "143.0.7499.4",
+      "width": 320,
+      "callbacks": [
+        "submit_dashboard"
+      ],
+      "state": {
+        "topics": [
+          "Tools"
+        ],
+        "saved": [
+          "small-tools"
+        ],
+        "batch_size": 8
+      },
+      "phone_observed": false
+    },
+    "files-submitted": {
+      "environment": "headless Chromium with official MCP AppBridge; simulated touch",
+      "browser": "143.0.7499.4",
+      "width": 390,
+      "callbacks": [
+        "submit_dashboard"
+      ],
+      "state": {
+        "selected": [
+          "report"
+        ],
+        "order": [
+          "report",
+          "notes",
+          "measurements"
+        ]
+      },
+      "phone_observed": false
+    },
+    "files-cancelled": {
+      "environment": "headless Chromium with official MCP AppBridge; simulated touch",
+      "browser": "143.0.7499.4",
+      "width": 320,
+      "callbacks": [
+        "submit_dashboard"
+      ],
+      "state": null,
+      "phone_observed": false
+    }
+  }
+}

@@ -42,5 +42,5 @@
     "The host lacks the resource or callback bridge; end the bounded probe",
     "Invalid data or protocol error; do not synthesize a selection"
   ],
-  "evidence": ["references/evidence.md", "references/setup.md"]
+  "evidence": ["references/evidence.md", "references/setup.md", "references/ci-result.json"]
 }
