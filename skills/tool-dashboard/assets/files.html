@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>GF file tray</title>
+    <!-- GF_STYLE -->
+  </head>
+  <body>
+    <main id="file-tray">
+      <div class="eyebrow">Working set</div>
+      <h1 id="title">Opening your file tray…</h1>
+      <div id="files" class="files" aria-label="Files"></div>
+      <div class="footer row">
+        <button class="primary" id="continue" type="button" disabled>
+          Continue</button
+        ><button id="cancel" type="button" disabled>Cancel</button
+        ><span id="status" role="status" aria-live="polite">Connecting…</span>
+      </div>
+    </main>
+    <!-- GF_BRIDGE -->
+    <script>
+      (() => {
+        const $ = (id) => document.getElementById(id);
+        let files = [],
+          selected = new Set(),
+          locked = true;
+        const tray = GFDashboard.connect({
+          onOpen(panel) {
+            files = panel.data.files;
+            $("title").textContent = panel.title;
+            render();
+          },
+          onStatus(status) {
+            locked = status !== "ready";
+            const labels = {
+              ready: "Select and arrange your files",
+              submitting: "Returning your selection…",
+              submitted: "Selection returned",
+              cancelled: "Cancelled",
+              expired: "Dashboard expired",
+              unconfirmed: "Delivery unconfirmed",
+              unavailable: "Dashboard connection unavailable",
+            };
+            $("status").textContent = labels[status] || status;
+            $("continue").disabled = locked;
+            $("cancel").disabled = locked;
+            render();
+          },
+          onTheme(theme) {
+            if (theme === "dark" || theme === "light")
+              document.documentElement.style.colorScheme = theme;
+          },
+        });
+        function render() {
+          const container = $("files");
+          container.replaceChildren();
+          files.forEach((file, index) => {
+            const card = document.createElement("section");
+            card.className =
+              "file" + (selected.has(file.id) ? " selected" : "");
+            const icon = document.createElement("div");
+            icon.className = "file-icon";
+            icon.setAttribute("aria-hidden", "true");
+            icon.textContent = (
+              file.title.includes(".") ? file.title.split(".").at(-1) : "FILE"
+            )
+              .slice(0, 5)
+              .toUpperCase();
+            card.append(icon);
+            const label = document.createElement("label");
+            label.className = "check";
+            const box = document.createElement("input");
+            box.type = "checkbox";
+            box.checked = selected.has(file.id);
+            box.disabled = locked;
+            box.setAttribute("aria-label", "Select " + file.title);
+            box.onchange = () => {
+              if (locked) return;
+              box.checked ? selected.add(file.id) : selected.delete(file.id);
+              card.classList.toggle("selected", box.checked);
+            };
+            const name = document.createElement("span");
+            name.className = "filename";
+            name.textContent = file.title;
+            label.append(box, name);
+            card.append(label);
+            if (file.summary) {
+              const summary = document.createElement("p");
+              summary.className = "summary";
+              summary.textContent = file.summary;
+              card.append(summary);
+            }
+            const move = document.createElement("button");
+            move.type = "button";
+            move.className = "move";
+            move.textContent = "Move earlier";
+            move.setAttribute("aria-label", "Move " + file.title + " earlier");
+            move.disabled = locked || index === 0;
+            move.onclick = () => {
+              if (locked || index === 0) return;
+              [files[index - 1], files[index]] = [
+                files[index],
+                files[index - 1],
+              ];
+              render();
+              container.children[index - 1].querySelector("button").focus();
+            };
+            card.append(move);
+            container.append(card);
+          });
+          if (!files.length) container.textContent = "No files supplied";
+        }
+        $("continue").onclick = () => {
+          if (!locked)
+            tray.submit({
+              selected: files
+                .filter((f) => selected.has(f.id))
+                .map((f) => f.id),
+              order: files.map((f) => f.id),
+            });
+        };
+        $("cancel").onclick = () => tray.cancel();
+      })();
+    </script>
+  </body>
+</html>

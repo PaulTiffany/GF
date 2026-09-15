@@ -13,6 +13,7 @@ teach the sequence, identify the matchup, and show what actually landed.
 python catalog.py list
 python catalog.py show serve-gif
 python catalog.py show check-model
+python catalog.py show tool-dashboard
 ```
 
 The catalogue shows each build's requirements, inputs, outputs, effects, bounds,
@@ -120,6 +121,39 @@ The helper uses only Python's standard library. Defaults bound the search to
 20,000 states, 200,000 transition checks, depth 64, and 5 seconds. No external
 service is required. The [model format](skills/check-model/references/model-format.md)
 explains atomic steps, finite domains, and the scope of each verdict.
+
+## Build 03: a custom dashboard inside the workflow
+
+[tool-dashboard](skills/tool-dashboard/skills/tool-dashboard/SKILL.md) displays a magazine or file
+tray through an MCP App, then holds a bounded tool call while the user chooses.
+Continue sends the selected state to that waiting call, allowing the assistant
+to use it in the next step. Both custom layouts share a reusable connection;
+a reviewed local HTML layout can use the same bridge.
+
+**Sequence:** open the panel → wait → receive the app's submission → continue.
+
+**Equip:** Node 20+, the pinned package dependencies, and an MCP App host that
+forwards UI callbacks while a tool call is pending. The package includes a Codex
+plugin manifest and stdio launch configuration. GitHub stores and checks the
+build; the chat host must register and display it.
+
+```bash
+cd skills/tool-dashboard
+npm ci --ignore-scripts
+npm run build
+npm test
+node scripts/server.mjs --config
+```
+
+**Matchup:** a compatible host can accept custom controls during the tool
+workflow. A local HTML preview or a subsequent chat message does not test this
+return path. Each panel expires within three minutes; no public service or
+general action dispatcher is included.
+
+**Proof:** backend tests exercise real MCP calls; the dedicated CI job tests the
+two layouts through the official AppBridge in Chromium. Phone registration,
+display and continuation still require the [client probe](skills/tool-dashboard/references/setup.md).
+See the [evidence boundaries](skills/tool-dashboard/references/evidence.md).
 
 ## Optional renderer and GitHub adapter
 

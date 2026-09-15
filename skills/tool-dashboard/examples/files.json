@@ -1,0 +1,8 @@
+{
+  "title": "Choose the working set",
+  "data": {"files": [
+    {"id":"notes","title":"notes.md","summary":"Sample research notes"},
+    {"id":"report","title":"report.pdf","summary":"Sample report metadata"},
+    {"id":"measurements","title":"measurements.csv","summary":"Sample measurements"}
+  ]}
+}

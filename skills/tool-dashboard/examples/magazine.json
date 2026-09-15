@@ -1,0 +1,11 @@
+{
+  "title": "A small sample edition",
+  "data": {
+    "topics": ["Research", "Gardens", "Tools"],
+    "articles": [
+      {"id":"models","topic":"Research","title":"What would change your conclusion?","summary":"Sample story: choose evidence to examine in the next research pass."},
+      {"id":"plants","topic":"Gardens","title":"One plant, a better growing space","summary":"Sample story: compare light, water, and room to grow before choosing the next experiment."},
+      {"id":"small-tools","topic":"Tools","title":"A useful tool that fits in a small build","summary":"Sample story: keep the capabilities you want to inspect next."}
+    ]
+  }
+}

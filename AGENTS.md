@@ -11,6 +11,10 @@ capability runner: keep each build narrow, auditable, and reproducible.
 - `skills/check-model/` searches finite models for safety failures and replays
   witnesses. Preserve modeling assumptions and label capped searches inconclusive;
   a finite-model result does not verify an external implementation.
+- `skills/tool-dashboard/` packages custom MCP App layouts and a bounded
+  open/wait/submit connection. Keep UI callbacks distinct from follow-up chat
+  messages. A browser harness passing does not establish phone integration;
+  record actual client rendering and the returned wait state separately.
 - `skills/serve-gif/` packages the portable delivery instructions, local
   preparation helper, optional player, and evidence. Keep this folder usable
   outside GF; it must not depend on this repository's name or account.
