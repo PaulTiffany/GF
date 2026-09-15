@@ -1,0 +1,25 @@
+{
+  "schema": 1,
+  "id": "check-model",
+  "summary": "Find and replay shortest safety counterexamples in small finite workflow models.",
+  "skill": "SKILL.md",
+  "entrypoint": "scripts/check_model.py",
+  "license": "LICENSE",
+  "requires": ["Python 3.10+ standard library", "Local model input and an optional new report path"],
+  "inputs": ["A finite JSON model with an initial state, transitions, and invariants", "Optional search budgets; an existing report for replay"],
+  "outputs": ["JSON verdict, model digest, budgets, and exploration statistics", "A replayable shortest counterexample trace when found"],
+  "effects": ["local-read", "local-write"],
+  "bounds": {
+    "enforced": [
+      "CLI model input at most 128 KiB; report input/output at most 1 MiB",
+      "At most 12 variables, 32 values per domain, 64 transitions, and 16 invariants",
+      "Default search: 20000 states, 200000 transition checks, depth 64, 5 seconds",
+      "Hard search ceilings: 50000 states, 500000 transition checks, depth 128, 10 seconds",
+      "Time checked between search steps; capped searches report inconclusive",
+      "Existing output paths are not overwritten"
+    ],
+    "operator": ["Preserve the requested property and expose modeling assumptions", "Use only authorized local inputs and outputs", "Treat the result as a claim about the finite model, not its real-world implementation"]
+  },
+  "stop_when": ["A counterexample is found or reachable states are exhausted", "A search budget is reached", "The model or witness is invalid; do not silently alter it to get a passing result"],
+  "evidence": ["references/evidence.md"]
+}

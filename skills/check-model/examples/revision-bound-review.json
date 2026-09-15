@@ -1,0 +1,16 @@
+{
+  "schema": 1,
+  "variables": {"revision": [0, 1], "reviewed": [-1, 0, 1], "merged": [false, true]},
+  "initial": {"revision": 0, "reviewed": -1, "merged": false},
+  "transitions": [
+    {"id": "review", "when": {"not": {"var": "merged"}},
+     "set": {"reviewed": {"var": "revision"}}},
+    {"id": "edit", "when": {"and": [{"not": {"var": "merged"}}, {"eq": [{"var": "revision"}, 0]}]},
+     "set": {"revision": 1}},
+    {"id": "merge", "when": {"and": [{"not": {"var": "merged"}}, {"eq": [{"var": "reviewed"}, {"var": "revision"}]}]},
+     "set": {"merged": true}}
+  ],
+  "invariants": {
+    "review-matches-merged-revision": {"or": [{"not": {"var": "merged"}}, {"eq": [{"var": "reviewed"}, {"var": "revision"}]}]}
+  }
+}

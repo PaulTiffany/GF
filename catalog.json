@@ -4,6 +4,10 @@
     {
       "package": "skills/serve-gif",
       "checks": ["tests/test_prepare_gif.py", "tests/player.test.cjs"]
+    },
+    {
+      "package": "skills/check-model",
+      "checks": ["tests/test_check_model.py"]
     }
   ]
 }

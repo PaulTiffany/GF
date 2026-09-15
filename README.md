@@ -12,6 +12,7 @@ teach the sequence, identify the matchup, and show what actually landed.
 ```bash
 python catalog.py list
 python catalog.py show serve-gif
+python catalog.py show check-model
 ```
 
 The catalogue shows each build's requirements, inputs, outputs, effects, bounds,
@@ -90,6 +91,35 @@ For the next micro-tool, teach the same compact build card:
 Each registered build includes a `build.json` declaration alongside its skill.
 The GIF package is the first complete example. Add builds through the process
 in [ARCHITECTURE.md](ARCHITECTURE.md#add-a-build).
+
+## Build 02: find a counterexample
+
+[check-model](skills/check-model/SKILL.md) explores finite workflow or protocol
+models for invariant failures. It returns a shortest failing sequence, can replay
+that witness, and labels a capped search `inconclusive`. A completed search is a
+claim about the supplied model and assumptions.
+
+The synthetic review example finds **review revision 0 → edit to revision 1 →
+merge with the old review**. Requiring review of the current revision closes
+that failure in the model. This is a demonstration, not an audit of the real
+readback Action. See the [evidence](skills/check-model/references/evidence.md).
+
+```bash
+python skills/check-model/scripts/check_model.py check \
+  skills/check-model/examples/stale-review.json --output /workspace/witness.json
+```
+
+Exit `2` means a counterexample was found. Replay it:
+
+```bash
+python skills/check-model/scripts/check_model.py replay \
+  skills/check-model/examples/stale-review.json /workspace/witness.json
+```
+
+The helper uses only Python's standard library. Defaults bound the search to
+20,000 states, 200,000 transition checks, depth 64, and 5 seconds. No external
+service is required. The [model format](skills/check-model/references/model-format.md)
+explains atomic steps, finite domains, and the scope of each verdict.
 
 ## Optional renderer and GitHub adapter
 

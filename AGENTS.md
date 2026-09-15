@@ -8,6 +8,9 @@ capability runner: keep each build narrow, auditable, and reproducible.
 - `catalog.json` indexes builds; `catalog.py` lists, inspects, and validates
   metadata without executing build code. See `ARCHITECTURE.md` for the contract.
 - `gf.py` validates a grid-cell specification and renders a GIF plus PNG poster.
+- `skills/check-model/` searches finite models for safety failures and replays
+  witnesses. Preserve modeling assumptions and label capped searches inconclusive;
+  a finite-model result does not verify an external implementation.
 - `skills/serve-gif/` packages the portable delivery instructions, local
   preparation helper, optional player, and evidence. Keep this folder usable
   outside GF; it must not depend on this repository's name or account.
