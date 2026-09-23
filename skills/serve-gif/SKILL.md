@@ -1,6 +1,6 @@
 ---
 name: serve-gif
-description: Deliver an existing animated GIF inside a chat that supports workspace file attachments. Use when a GIF link or tool preview does not appear for the user, or when preparing a GIF for inline delivery. Supports an optional embedded frame player when the host provides an HTML visualization surface.
+description: Deliver an existing animated GIF inside a chat that supports workspace file attachments. Use when a GIF link or tool preview does not appear for the user, when preparing a GIF for inline delivery, or when the user needs a mobile-shareable copy. Supports an optional embedded frame player when the host provides an HTML visualization surface.
 ---
 
 # Serve GIF
@@ -9,11 +9,26 @@ Land the existing animation in the conversation without asking the user to
 download and re-upload it. This recipe needs a runtime that can write files
 and a host that can present those files; loading instructions grants neither.
 
+Treat these as separate delivery properties:
+
+1. the GIF bytes were prepared correctly,
+2. the chat emitted an attachment,
+3. the receiving client plays it inline,
+4. the receiving client can retrieve/share/export it.
+
+Success at one layer does not prove the next. In particular, inline playback
+does not prove that a phone's download or share action reaches a usable file.
+
 ## Equip
 
 - Use an existing GIF, or finish the requested generation before this skill.
 - Locate a writable workspace and its supported attachment mechanism.
 - Use Python 3.10+ and Pillow for the bundled preparation helper.
+- Identify whether the user only needs inline playback or also needs a
+  retrievable/shareable copy.
+- If sharing/export is required, identify an available transport that yields
+  either a host-native file attachment or a durable user-reachable URL.
+  A sandbox image path alone is not evidence of mobile shareability.
 - If the source is remote, use an available authorized download/connector.
   GitHub is optional. Read [references/github.md](references/github.md) only
   for a GitHub source.
@@ -45,9 +60,18 @@ and a host that can present those files; loading instructions grants neither.
    ![A lattice animal dancing](sandbox:/workspace/gif/dance.gif)
    ```
 
-5. Distinguish preparation, attachment emission, and user-visible playback.
-   Report playback as confirmed only with evidence from the receiving client.
-   A new client can be checked with one short question about whether it moves.
+5. If the user asked to save, share, forward, or export the GIF from a phone,
+   do not stop at inline playback. Provide a distinct retrieval/share route
+   when the available host or an authorized external store supports one.
+   Publishing the GIF to a repository, release, Pages site, cloud drive, or
+   other external destination is a separate side effect and requires the
+   user's authorization when it is not already part of the task.
+
+6. Distinguish preparation, attachment emission, user-visible playback, and
+   retrieval/shareability in status claims. Report each as confirmed only with
+   evidence from the receiving client. A new client can be checked with one
+   short question tailored to the requested goal: whether it moves, whether
+   the file opens, or whether the share sheet can send it.
 
 ## Optional frame player
 
@@ -65,11 +89,20 @@ is capped at 1 MiB; the attachment route remains available for larger media.
 ## When the build cannot equip
 
 Name the specific missing runtime or presentation capability. A browser link
-may still be useful, but do not call it successful in-thread delivery. Do not
-repeat an unchanged failed embed, re-render the art to solve transport, or
-require manual file transfer as the normal last step. Change the delivery
-mechanism only when the available tools support that change.
+may still be useful, but do not call it successful in-thread delivery.
+
+If inline playback works but a phone's download/share action resolves to a
+missing Library item, dead attachment, or otherwise unusable destination,
+treat that as a transport failure. Do not re-render the art to solve transport,
+and do not merely rename or re-emit the same sandbox attachment as the normal
+retry. Change the delivery mechanism when available: prefer a host-native file
+attachment, or an authorized durable external URL/storage route. If no such
+route is available, say that inline playback is confirmed but mobile
+retrieval/share is not equipped.
+
+Do not repeat an unchanged failed embed or require manual file transfer as the
+normal last step.
 
 See [references/phone-evidence.md](references/phone-evidence.md) for the observed
-successful routes and the limits of that evidence. This skill is MIT licensed;
-retain its bundled `LICENSE` when copying the folder.
+successful and failed routes and the limits of that evidence. This skill is MIT
+licensed; retain its bundled `LICENSE` when copying the folder.
