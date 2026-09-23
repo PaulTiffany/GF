@@ -21,4 +21,5 @@ jobs:
     steps:
       - uses: Tiffany-Studios/pr-readback@v1
         with:
+          review-label: I have reviewed the complete diff and accept responsibility for the merge
           guidance: See the pull request template. Agents open drafts; a human reads the diff, ticks the review box, and marks it ready.
