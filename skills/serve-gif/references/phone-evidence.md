@@ -1,8 +1,10 @@
-# Phone probe: 2026-09-14
+# Phone probes
 
-Evidence comes from Paul Tiffany's GF conversation in ChatGPT on his phone.
-It establishes a working combination in that session, not universal mobile
-support or the date on which the product first gained GIF capability.
+Evidence comes from Paul Tiffany's GF conversations in ChatGPT on his phone.
+These observations establish behavior in specific sessions, not universal
+mobile support or the date on which the product first gained GIF capability.
+
+## 2026-09-14
 
 | Route | Observation |
 | --- | --- |
@@ -22,7 +24,7 @@ The experiment changed several delivery conditions together. It does not prove
 which individual condition was necessary, isolate client-version differences,
 or show that an ordinary phone chat without these tools can use the same route.
 
-## Reproduction fixture
+### Reproduction fixture
 
 - Repository: `PaulTiffany/GF`
 - Render run: `34884496597`
@@ -35,3 +37,23 @@ or show that an ordinary phone chat without these tools can use the same route.
 Workflow artifacts may expire. The commit retains the original GIF. The helper
 and template in this skill generalize the successful manual sequence; their
 automated checks are not an additional phone-client observation.
+
+## 2026-09-23
+
+A newly generated 512 × 512, 24-frame GIF was prepared with this skill's
+`prepare_gif.py` helper and emitted in chat using sandbox Markdown.
+
+| Property | Observation |
+| --- | --- |
+| Inline animation | User confirmed: “It works”. |
+| Phone retrieval/share | User reported that attempting to download/share led to “library not found”. |
+
+This is evidence that inline playback and mobile retrieval/shareability are
+different delivery properties. A successful sandbox embed must not be treated
+as proof that the receiving phone can obtain a shareable file.
+
+The appropriate retry target is transport, not rendering. Re-rendering,
+renaming, or re-emitting identical GIF bytes through the same sandbox route
+does not address the observed failure unless the client supplies new evidence
+that the alternate emission path is materially different. Prefer a host-native
+file attachment or, when authorized, a durable user-reachable external URL.
