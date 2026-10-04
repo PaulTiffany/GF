@@ -4,8 +4,7 @@
   "idea": "Build a driving scene from independent layers: moving environment, car prop/set, driver actor, passenger actor, front-of-actor occluders such as dashboard/glass, and optional weather/light/foreground motion.",
   "inputs": {
     "required": [
-      "repeatable_background",
-      "car_prop_or_set",
+      "character_free_scene_kit_for_car-front-seat",
       "driver_actor_pack_4pose",
       "passenger_actor_pack_4pose"
     ],
@@ -67,7 +66,7 @@
     "color_grade",
     "lyric_or_motif_overlay"
   ],
-  "reuse": "One road/environment plate, one car set/prop, and two independent four-pose actor sheets can support many driving shots.",
+  "reuse": "Use the character-free car-front-seat scene template plus two independent typed four-pose actor sheets. Match poses mechanically to driver/passenger slots before rendering.",
   "good_for": [
     "verses",
     "instrumentals",
@@ -79,5 +78,6 @@
     "using a whole-scene still when independent actor pose changes are needed",
     "visible background seams",
     "regenerating the whole scene for every shot"
-  ]
+  ],
+  "scene_template": "../scenes/car-front-seat.json"
 }
