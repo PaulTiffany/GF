@@ -1,0 +1,30 @@
+{
+  "schema": 1,
+  "id": "driving-loop",
+  "idea": "Persistent character/vehicle sprites ride over a seamless or loopable moving road plate, with blur, lighting and weather layers creating convincing motion without generated video.",
+  "inputs": {
+    "required": ["vehicle_or_character_pack", "repeatable_background"],
+    "optional": ["foreground_blur", "rain_overlay", "light_sweeps", "dashboard_layer", "lyric_overlay"]
+  },
+  "composition": [
+    {"layer": "background", "behavior": "scroll_or_pan_loop", "notes": "Prefer a horizontally repeatable or long plate; blur and slight scale hide seams."},
+    {"layer": "vehicle", "behavior": "persistent_sprite", "notes": "Hold position or add tiny vertical/rotational oscillation."},
+    {"layer": "characters", "behavior": "pose_or_sprite_sequence", "notes": "Swap semantic poses such as driving, leaning_close, looking_over, singing."},
+    {"layer": "foreground", "behavior": "fast_parallax", "notes": "Optional blurred poles, guardrails, rain, branches or light streaks sell speed."},
+    {"layer": "lighting", "behavior": "periodic_sweep", "notes": "Headlights, neon, moonlight or passing street lamps can pulse independently."}
+  ],
+  "variation_knobs": [
+    "background_scroll_speed",
+    "camera_crop",
+    "vehicle_scale",
+    "character_pose",
+    "foreground_parallax_speed",
+    "rain_density",
+    "light_sweep_frequency",
+    "color_grade",
+    "lyric_or_motif_overlay"
+  ],
+  "reuse": "One generated sprite atlas plus one repeatable road plate can support many visually distinct shots across a song.",
+  "good_for": ["verses", "instrumentals", "transitions", "recurring road motif"],
+  "avoid": ["perfectly static vehicle with no secondary motion", "visible background seams", "regenerating the whole scene for every shot"]
+}
