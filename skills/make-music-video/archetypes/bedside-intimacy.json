@@ -4,10 +4,43 @@
   "scene_template": "../scenes/bedside.json",
   "idea": "Use seated, reclined or embrace poses in a character-free bed/room scene while rain, lamp glow, curtain movement and camera push create temporal interest.",
   "inputs": {
-    "required": ["character_free_scene_kit_for_bedside", "left_actor_pack_4pose", "right_actor_pack_4pose"],
-    "optional": ["window_rain", "lamp_glow", "curtain_motion", "lyric_overlay"]
+    "required": [
+      "character_free_scene_kit_for_bedside",
+      "left_actor_pack_4pose",
+      "right_actor_pack_4pose"
+    ],
+    "optional": [
+      "window_rain",
+      "lamp_glow",
+      "curtain_motion",
+      "lyric_overlay"
+    ]
   },
-  "variation_knobs": ["left_pose", "right_pose", "camera_push", "lamp_intensity", "rain_speed", "foreground_softness"],
-  "good_for": ["bridge", "late verse", "vulnerable refrain", "outro"],
-  "avoid": ["standing poses", "fusing blanket with actors when the blanket must occlude them"]
+  "variation_knobs": [
+    "left_pose",
+    "right_pose",
+    "left_gaze",
+    "right_gaze",
+    "left_mouth",
+    "right_mouth",
+    "camera_push",
+    "lamp_intensity",
+    "rain_speed",
+    "foreground_softness"
+  ],
+  "good_for": [
+    "bridge",
+    "late verse",
+    "vulnerable refrain",
+    "outro"
+  ],
+  "avoid": [
+    "standing poses",
+    "fusing blanket with actors when the blanket must occlude them"
+  ],
+  "selection_examples": [
+    "quiet bridge: reclined/seated gaze=partner mouth=closed",
+    "soft sung line: seated/reclined mouth=soft_open",
+    "outro: eyes_closed mouth=closed with camera/light motion only"
+  ]
 }
