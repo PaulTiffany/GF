@@ -1,0 +1,19 @@
+{
+  "schema": 1,
+  "id": "performance-vocal",
+  "scene_template": "../scenes/performance-stage.json",
+  "idea": "Place one performance-compatible actor pack into a character-free stage and select mouth/gaze state mechanically for singing beats while camera, lighting, haze and Manim graphics carry continuous motion.",
+  "inputs": {
+    "required": ["character_free_scene_kit_for_performance-stage", "performer_vocal_pack_4pose"],
+    "optional": ["mic_stand_front", "stage_haze", "spotlight", "audience_bokeh", "manim_overlay"]
+  },
+  "variation_knobs": ["performer_pose", "gaze", "mouth_state", "camera_push", "camera_pan", "spotlight_position", "haze_density", "overlay_intensity"],
+  "selection_examples": [
+    "rest or breath: mouth=closed",
+    "ordinary sung phrase: mouth=singing_open",
+    "soft intimate phrase: mouth=soft_open",
+    "climax: mouth=hold_note"
+  ],
+  "good_for": ["chorus", "bridge", "vocal climax", "performance hook"],
+  "avoid": ["rapid mouth-state switching that mimics lip sync without phoneme assets", "regenerating a new performer for each lyric line"]
+}
