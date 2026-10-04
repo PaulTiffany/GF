@@ -43,6 +43,26 @@ Use a fixed grid and named pose plan. Require:
 - no labels or decorative typography;
 - enough empty margin around every subject to crop cleanly.
 
+### Character-free scene / set plate
+
+A reusable scene is generated **without recurring characters**. It should be
+designed around typed actor slots rather than baked performers.
+
+Require:
+
+- no recurring actors in the pixels;
+- enough negative/clear space for each declared slot;
+- composition appropriate to the slot pose family, e.g. seated actors for a
+  diner booth or car, standing actors for a room/stage;
+- set/prop geometry consistent with the normalized anchors in the scene
+  template;
+- if actors must appear behind foreground geometry, provide that geometry as a
+  separate occluder asset rather than baking actors into the scene;
+- no decorative UI/text unless the scene itself genuinely contains signage.
+
+The scene template, not the generated image, declares which pose types fit each
+slot.
+
 ### Repeatable background plate
 
 Require:
@@ -74,7 +94,7 @@ for production atlases.
 Before invoking image generation, answer:
 
 1. What exact artifact class am I requesting?
-2. Can the downstream compositor crop/use it without manual repair?
+2. Can the downstream compositor crop/use it without manual repair or visual placement discovery?
 3. What must remain identical across cells/variants?
 4. What must **not** appear in the pixels?
 5. How will I reject the result if the generator gets creative in the wrong way?
@@ -104,4 +124,4 @@ A beautiful poster is still a failed sprite atlas.
 
 The brief is cheap; generation is expensive. Spend reasoning before inference.
 
-One well-scripted visual call should ideally produce several downstream assets.
+One well-scripted visual call should ideally produce several downstream assets, but do not compound unrelated scene roles merely to reduce call count. Actor sheets, scene/set plates, occluders, and effects should remain mechanically separable.
