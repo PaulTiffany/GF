@@ -1,0 +1,9 @@
+{
+  "schema": 1,
+  "archetypes": [
+    {"id": "driving-loop", "file": "driving-loop.json", "use_for": ["travel", "verse", "instrumental", "road motif"]},
+    {"id": "slow-dance-loop", "file": "slow-dance-loop.json", "use_for": ["romance", "chorus", "bridge"]},
+    {"id": "window-rain", "file": "window-rain.json", "use_for": ["introspection", "verse", "pre-chorus"]},
+    {"id": "lyric-cloud", "file": "lyric-cloud.json", "use_for": ["lyric emphasis", "bridge", "hook", "abstract section"]}
+  ]
+}
