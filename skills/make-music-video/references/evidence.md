@@ -1,9 +1,11 @@
 # Evidence
 
-## 2026-10-04 synthetic render probe
+## What is proven
 
-The new helper was exercised in a local Debian tool environment with Python and
-`ffmpeg version 7.1.5-0+deb13u1`.
+### 2026-10-04 local assembly probe
+
+The bundled helper was exercised in a local Debian tool environment with Python
+and `ffmpeg version 7.1.5-0+deb13u1`.
 
 Input:
 
@@ -20,20 +22,36 @@ Observed result:
 - FFprobe format duration was exactly 4.000 seconds,
 - the helper's post-render verification accepted the file.
 
-The same session ran four unit tests covering bounded project loading, mixed
-image/video command construction, project-directory path confinement, invalid
-image trimming fields, and the 4K-class pixel bound.
+The same development pass added unit coverage for bounded project loading,
+mixed image/video command construction, project-directory path confinement,
+invalid image trimming fields, and the 4K-class pixel bound.
 
-## What this does not establish
+## Conjure-mode capability observation
 
-The synthetic probe does not establish creative quality, correctness of any
-particular image/video generation provider, lip sync, subtitle rendering,
-transition effects, publishing, or playback in a specific ChatGPT/mobile client.
-It also does not prove that an arbitrary codec accepted by one FFmpeg build will
-be accepted by every other FFmpeg build.
+On 2026-10-04, ChatGPT's plugin directory returned a Runway integration whose
+declared capabilities include generating and editing images, videos, and audio,
+generating music and sound effects, and building multi-shot story videos
+directly from ChatGPT.
 
-The completed `P(HOP)` music video that motivated this build is production
-experience for the broader workflow idea, not test evidence for this newly
-written helper. A future reproduction using retained `P(HOP)` source media may
-be added as a separate evidence record if those inputs are deliberately made
-available to the build.
+That observation establishes that a ChatGPT host can in principle expose the
+kind of generative adapter required by this skill. It does **not** establish
+that Runway is installed or connected for any particular user/session, that the
+account has sufficient credits, or that this GF skill has already produced a
+music video through it.
+
+## What is not proven
+
+The synthetic FFmpeg probe does not prove Conjure mode. It establishes only the
+mechanical assembly/verification path.
+
+As of the first draft of this build, the motivating phone conversation had not
+yet produced a newly generated music video through a connected media-generation
+provider. Therefore the build must not describe a storyboard, manifest, pull
+request, generated still, or synthetic fixture as the user's requested music
+video.
+
+The completed `P(HOP)` music video that motivated the build is prior production
+experience for the workflow idea, not execution evidence for this new skill.
+A future end-to-end probe should begin with a creative brief in a host with a
+connected generation adapter and end with a playable music video shown to the
+user in that same workflow.
