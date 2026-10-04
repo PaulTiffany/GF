@@ -10,10 +10,10 @@ motion semantics rather than being re-invented frame by frame.
 
 ## Pack types
 
-- **sprite pack** — several full-body poses or animation frames on one atlas;
-- **expression pack** — stable framing with several emotional states;
-- **cutout pack** — transparent character, prop, foreground or effect elements;
-- **prop pack** — recurring car, phone, sign, instrument, furniture, etc.;
+- **actor pack** — one recurring subject, usually as a small four-pose 2×2 sheet;
+- **expression pack** — one actor with several emotional states;
+- **prop/set pack** — car, phone, sign, instrument, booth, bed, furniture, etc.;
+- **occluder pack** — dashboard, windshield frame, table edge, curtains, foliage, etc.;
 - **effect pack** — rain, haze, glow, shadow, flare or light mattes;
 - **environment pack** — repeatable/extendable background plates.
 
@@ -46,8 +46,8 @@ filenames.
 
 - identity and wardrobe continuity improve;
 - a single visual-generation call has higher downstream value;
-- archetypes can reuse the same subject in different environments;
-- local animation becomes deterministic and cheap;
+- archetypes can place the same actor independently into different sets and environments;
+- local scene composition becomes deterministic and cheap;
 - model throttling or unavailable high-tier inference hurts less;
 - the agent reasons in terms of characters and actions rather than raw pixels.
 
@@ -71,3 +71,29 @@ After generation, inspect the output against the visual-out brief. Reject attrac
 A generated atlas is an upstream source artifact. The final compositor should
 consume extracted/cropped sprites or rendered archetype clips rather than become
 dependent on one image-generation provider.
+
+
+## Default actor-pack size: four poses
+
+For recurring characters, default to **one subject per 2×2 four-pose sheet**.
+This is intentionally small. It is easier for image generation to preserve
+identity, easier to crop cleanly, and easier for the agent to reason about.
+
+Typical four-pose sets should be archetype-specific, for example:
+
+- driving: `forward`, `look_partner`, `lean_close`, `phone_glance`;
+- romance: `idle`, `embrace`, `forehead_touch`, `resting`;
+- performance: `sing_neutral`, `sing_open`, `gesture`, `hold_note`.
+
+Generate a second four-pose sheet for a second recurring actor. Keep the actors
+separate from each other and from props/sets unless a fused pair is explicitly
+the reusable object required by the archetype.
+
+## Respect scene roles
+
+A character that appears in a car should remain an **actor asset**, while the car
+remains a **prop/set asset**. The road is an **environment**, windshield/dashboard
+can be **occluders**, and rain/light remain **effects**.
+
+This separation is what makes the same actor pack reusable across driving, diner,
+motel, stage, and other scenes. See `scene-graph.md`.
