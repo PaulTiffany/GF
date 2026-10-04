@@ -39,6 +39,8 @@
     "operator": [
       "Prefer reusable templates, asset packs, scene archetypes, and a limited module palette over inventing every shot from scratch",
       "Prefer one high-value visual-generation atlas or pack over repeated isolated generations when continuity matters",
+      "Preserve scene-layer roles: actors, props/sets, occluders, effects, and environments remain separate until an archetype is composed",
+      "For recurring actors, prefer one subject per four-pose 2x2 sheet rather than large mixed-character atlases",
       "Before image generation for a production asset, write a visual-out brief with artifact role, downstream use, continuity locks, forbidden pixels, and acceptance checks",
       "Reject a generated visual that is the wrong artifact class even if it is aesthetically strong",
       "Do not require paid text-to-video access when still generation plus deterministic motion/compositing can satisfy the request",
@@ -57,6 +59,7 @@
     "references/evidence.md",
     "references/visual-grammar.md",
     "references/asset-packs.md",
+    "references/scene-graph.md",
     "references/visual-out-contract.md",
     "references/field-notes.md"
   ]
