@@ -73,7 +73,7 @@ separate delivery claim and must be observed rather than assumed.
 ## Start with the visual grammar
 
 Do not invent every shot independently. Read `references/visual-grammar.md`,
-`references/asset-packs.md`, `references/scene-graph.md`, `references/pose-types.md`, `references/visual-out-contract.md`, `templates/catalog.json`, `scenes/catalog.json`, and `archetypes/catalog.json`, then choose:
+`references/asset-packs.md`, `references/scene-graph.md`, `references/pose-types.md`, `references/manim-lyrics.md`, `references/visual-out-contract.md`, `templates/catalog.json`, `scenes/catalog.json`, and `archetypes/catalog.json`, then choose:
 
 1. **one video template** for song-level attention and section roles;
 2. **one style pack** for world/continuity;
@@ -175,6 +175,27 @@ visual situations whose variation can be parameterized instead of re-invented.
 
 Prefer instantiating and varying archetypes before asking inference to regenerate
 an entire scene.
+
+## Compile Manim lyric overlays
+
+Treat lyric animation as a separate graphics layer above a compiled scene.
+
+```bash
+python scripts/lyric_overlay.py examples/lyric-overlay.json \
+  --output /project/generated/sugar-bear-overlay.py
+```
+
+The compiler validates timing, canvas, normalized anchors, text length, scale,
+rotation, and a bounded behavior vocabulary: `fade_hold`, `drift_up`,
+`pulse`, `orbit`, `rain`, and `scatter`.
+
+It then emits deterministic Manim source. In a host with Manim installed, render
+that source on a transparent background to an alpha-capable intermediate, then
+composite it above any compiled scene. The lyrics remain independently timed and
+editable; they are never baked into actor sheets or scene/set generation.
+
+Use this sparingly. The goal is moving typography as part of the visual world,
+not default karaoke subtitles.
 
 ## Map the song
 
@@ -316,5 +337,5 @@ is complete, when a genuinely required capability is absent, or when another
 attempt would repeat a failed route without a concrete change.
 
 See `references/evidence.md`, `references/visual-grammar.md`,
-`references/asset-packs.md`, `references/scene-graph.md`, `references/pose-types.md`, `references/visual-out-contract.md`, and `references/field-notes.md`. Retain the
+`references/asset-packs.md`, `references/scene-graph.md`, `references/pose-types.md`, `references/manim-lyrics.md`, `references/visual-out-contract.md`, and `references/field-notes.md`. Retain the
 bundled MIT `LICENSE` when copying the skill independently.
