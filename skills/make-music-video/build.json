@@ -14,10 +14,14 @@
   "inputs": [
     "A creative brief plus a song/audio source",
     "A selected video template and style pack, plus reusable asset packs/archetypes when appropriate",
+    "For recurring actors: fixed 2x2 single-actor pose-sheet manifests with four typed poses",
+    "For reusable scenes: character-free scene templates whose actor slots declare accepted pose types, normalized anchors, scale, z-order, and occluders",
     "For local assembly: one bounded JSON project manifest plus referenced local image/video assets"
   ],
   "outputs": [
     "A complete playable music-video artifact",
+    "Deterministic four-cell crop receipts for actor pose sheets",
+    "Mechanical scene/pose compatibility results for named actor slots",
     "For local rendering: a verified H.264/AAC MP4 and JPEG poster",
     "JSON media facts including duration, dimensions, byte lengths, and SHA-256 values",
     "An explicit delivery observation distinguishing file creation from inline-player success"
@@ -37,6 +41,7 @@
       "Local renderer: audio duration and trimmed video-source durations are probed before rendering"
     ],
     "operator": [
+      "Use scripts/pose_sheet.py for fixed-grid actor extraction and scripts/scene_contract.py for pose/scene compatibility instead of visual guessing",
       "Prefer reusable templates, asset packs, scene archetypes, and a limited module palette over inventing every shot from scratch",
       "Prefer one high-value visual-generation atlas or pack over repeated isolated generations when continuity matters",
       "Preserve scene-layer roles: actors, props/sets, occluders, effects, and environments remain separate until an archetype is composed",
