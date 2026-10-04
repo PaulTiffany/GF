@@ -26,32 +26,59 @@ The same development pass added unit coverage for bounded project loading,
 mixed image/video command construction, project-directory path confinement,
 invalid image trimming fields, and the 4K-class pixel bound.
 
-## Conjure-mode capability observation
+### 2026-10-04 phone-chat Conjure-mode probe
+
+The motivating phone conversation then exercised a stronger path without paid
+video-generation inference.
+
+Input:
+
+- one user-supplied finished WAV, `My Sugar Bear.wav`, duration 349.360 seconds,
+- an exact lyric/section structure supplied by the user,
+- ChatGPT-native image generation for a recurring pair of romantic "sugar bear"
+  characters and a coherent noir roadside/motel visual world,
+- local FFmpeg motion/compositing to turn the generated stills into moving shots
+  and synchronize them to the supplied song.
+
+Observed result:
+
+- a complete 5:49 music-video artifact was rendered,
+- 1280x720 H.264 video plus AAC audio were verified with FFprobe,
+- the master duration was 349.375 seconds,
+- a phone-oriented 960x540 H.264/AAC derivative was produced at 13,768,826 bytes,
+- the phone derivative SHA-256 was
+  `ba567b4fa9405fa531ecadbcf6c809165e2983bcc09e0d989f1f59ceb9f47568`,
+- sampled frames across intro, chorus, bridge, and outro showed the intended
+  progression from moonlit roadside/car imagery through motel-room imagery to
+  dawn.
+
+This is evidence that Conjure mode does **not** inherently require a paid
+text-to-video model. In a host with native still-image generation plus a local
+media runtime, a supplied song can be turned into an actual moving music-video
+artifact through deterministic motion, cuts, compositing, and encoding.
+
+The visual motion in this probe is generated from still images rather than a
+video diffusion model. That distinction should remain explicit.
+
+## Runway capability observation
 
 On 2026-10-04, ChatGPT's plugin directory returned a Runway integration whose
 declared capabilities include generating and editing images, videos, and audio,
 generating music and sound effects, and building multi-shot story videos
 directly from ChatGPT.
 
-That observation establishes that a ChatGPT host can in principle expose the
-kind of generative adapter required by this skill. It does **not** establish
-that Runway is installed or connected for any particular user/session, that the
-account has sufficient credits, or that this GF skill has already produced a
-music video through it.
+The user connected Runway during the probe. The connected workspace was on the
+Free plan and exposed image models but no video-generation models, so Runway
+video generation was not used. That failure helped establish the fallback rule:
+paid generative-video access is optional acceleration, not the success gate.
 
 ## What is not proven
 
-The synthetic FFmpeg probe does not prove Conjure mode. It establishes only the
-mechanical assembly/verification path.
+This probe does not establish arbitrary text-to-song generation, lip sync,
+performance-video generation, photorealistic continuous motion, or universal
+mobile playback across every ChatGPT client.
 
-As of the first draft of this build, the motivating phone conversation had not
-yet produced a newly generated music video through a connected media-generation
-provider. Therefore the build must not describe a storyboard, manifest, pull
-request, generated still, or synthetic fixture as the user's requested music
-video.
-
-The completed `P(HOP)` music video that motivated the build is prior production
-experience for the workflow idea, not execution evidence for this new skill.
-A future end-to-end probe should begin with a creative brief in a host with a
-connected generation adapter and end with a playable music video shown to the
-user in that same workflow.
+The completed `P(HOP)` music video that originally motivated the build remains
+prior production experience rather than execution evidence for this package.
+The `My Sugar Bear` probe is the first end-to-end evidence attached directly
+to this build's intended Conjure-mode boundary.
