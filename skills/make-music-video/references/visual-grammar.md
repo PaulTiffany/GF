@@ -10,9 +10,7 @@ scratch.
    Examples: narrative ballad, hook-driven pop, ambient/sonification.
 2. **Style pack** — the visual world: palette, characters, locations, recurring
    objects, prompt anchors, continuity rules, and forbidden drift.
-3. **Asset packs** — persistent reusable visual objects such as sprite atlases,
-   expressions, props, cutouts, effects, and repeatable environments. See
-   `asset-packs.md`.
+3. **Asset packs** — persistent reusable visual objects kept separate by scene role: actors, sets/props, occluders, effects, and environment plates. See `asset-packs.md` and `scene-graph.md`.
 4. **Motif pack** — a small set of recurring ideas tied to lyrics or musical
    events: a clock, road, sticker, constellation, waveform, color change, etc.
 5. **Scene archetypes** — reusable mini-directing recipes that combine layers and
@@ -33,21 +31,19 @@ An archetype captures a reusable *situation*, not a finished shot.
 
 For example, a driving scene can be built from:
 
-- one vehicle/character sprite pack,
-- one repeatable or sufficiently long road background,
-- optional foreground blur,
-- optional rain,
+- one repeatable or sufficiently long road/environment plate,
+- one car prop or car-interior set,
+- one four-pose sheet for the driver actor,
+- one four-pose sheet for the passenger actor,
+- dashboard/glass/door-frame occluders in front of the actors,
+- optional foreground blur and rain,
 - periodic light sweeps,
-- small pose swaps and camera changes.
+- actor-pose swaps and camera changes.
 
 That one composition can yield many shots without re-generating the whole scene.
-The background can loop or scroll continuously while the persistent foreground
-sprites remain stable. Variation comes from speed, crop, pose, lighting, weather,
-parallax, and overlays.
+The background can loop or scroll continuously while the car, each actor, dashboard/glass occluders, foreground effects, and lighting remain independently controllable. Variation comes from speed, crop, actor pose, prop motion, lighting, weather, parallax, and overlays.
 
-This is the same general lesson as persistent StickerBook objects: reuse stable
-visual entities and change bounded state rather than asking inference to recreate
-the world every time.
+This is the same general lesson as persistent StickerBook objects: preserve object identity **and scene-layer boundaries**. The bears are actors in the car scene; they are not part of the car asset. Reuse stable entities and change bounded state rather than asking inference to recreate the world every time.
 
 ## Selection rule
 
@@ -80,7 +76,7 @@ The schema-2 local renderer supports these image motions:
 It also supports `cut` and `fade_black` boundaries and automatically extracts a
 JPEG poster after rendering. These are primitives, not an artistic ceiling.
 A capable host may additionally create Manim scenes, animated typography,
-procedural fields, stock-footage inserts, masks, overlays, sprite compositions,
+procedural fields, stock-footage inserts, masks, overlays, layered scene compositions,
 or generated video and pass the resulting clips to the same final renderer as
 ordinary video shots.
 
