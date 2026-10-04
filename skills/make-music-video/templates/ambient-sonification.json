@@ -1,0 +1,14 @@
+{
+  "schema": 1,
+  "id": "ambient-sonification",
+  "purpose": "Ambient, instrumental, environmental, data-mapped, or explicitly sonified work.",
+  "rules": {
+    "opening": "establish a field, environment, or mapping rule",
+    "development": "change visual parameters with musical structure rather than inventing narrative events",
+    "peak": "increase density, contrast, motion, or dimensionality",
+    "release": "remove layers gradually",
+    "outro": "return to the initial field with one changed parameter"
+  },
+  "preferred_modules": ["procedural_field", "waveform", "particle_system", "stock_texture", "slow_reframe", "data_mapping"],
+  "pacing": {"default_shot_seconds": [8, 30], "avoid": "arbitrary beat cuts"}
+}
