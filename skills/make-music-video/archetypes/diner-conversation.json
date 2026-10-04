@@ -1,0 +1,13 @@
+{
+  "schema": 1,
+  "id": "diner-conversation",
+  "scene_template": "../scenes/diner-booth.json",
+  "idea": "Place two independently typed seated actors into a character-free booth scene; let rain, neon reflections, camera framing and occasional pose swaps carry the motion.",
+  "inputs": {
+    "required": ["character_free_scene_kit_for_diner-booth", "left_actor_pack_4pose", "right_actor_pack_4pose"],
+    "optional": ["window_rain", "neon_reflection", "table_props", "lyric_overlay"]
+  },
+  "variation_knobs": ["left_pose", "right_pose", "camera_push", "crop", "rain_density", "reflection_intensity", "table_prop_state"],
+  "good_for": ["verse", "chorus intimacy", "conversation lyric", "memory sequence"],
+  "avoid": ["standing poses in booth slots", "baking actors into the booth image", "animating mouths without a dedicated mouth/face system"]
+}
