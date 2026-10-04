@@ -73,7 +73,7 @@ separate delivery claim and must be observed rather than assumed.
 ## Start with the visual grammar
 
 Do not invent every shot independently. Read `references/visual-grammar.md`,
-`references/asset-packs.md`, `references/scene-graph.md`, `references/pose-types.md`, `references/manim-lyrics.md`, `references/visual-out-contract.md`, `templates/catalog.json`, `scenes/catalog.json`, and `archetypes/catalog.json`, then choose:
+`references/asset-packs.md`, `references/scene-graph.md`, `references/pose-types.md`, `references/pose-families.md`, `references/manim-lyrics.md`, `references/visual-out-contract.md`, `templates/catalog.json`, `scenes/catalog.json`, and `archetypes/catalog.json`, then choose:
 
 1. **one video template** for song-level attention and section roles;
 2. **one style pack** for world/continuity;
@@ -163,6 +163,36 @@ placement when a scene template already provides it.
 
 Bundled scene templates include `car-front-seat`, `diner-booth`,
 `standing-room`, and `bedside`.
+
+## Refine actors inside compatible scenes
+
+Body pose compatibility and performance state are separate.
+
+For schema-2 actor sheets, each of the four cells also declares:
+
+- `gaze` — e.g. forward, partner, phone, audience, eyes-closed;
+- `mouth` — closed, smile, soft-open, singing-open, hold-note;
+- `interaction` — none, partner, phone, steering-wheel, table, guitar, microphone.
+
+This lets a diner actor remain `seated_table` while choosing whether to listen,
+look at the partner, sing softly, or sing openly. It lets a driver remain
+`seated_driver` while looking forward, looking at the partner, singing, or
+glancing at a phone.
+
+Filter those states mechanically:
+
+```bash
+python scripts/scene_contract.py match \
+  scenes/diner-booth.json examples/pose-sheet-diner-v2.json \
+  --slot right_seat --gaze partner --mouth singing_open
+```
+
+Prefer reusable four-state families from `references/pose-families.md` rather
+than inventing four arbitrary variants per scene.
+
+For tightly held objects such as guitars, use a four-pose **interaction pack**
+with the actor and held object already aligned. Keep the surrounding stage/set,
+lighting, haze, occluders, lyrics and camera separate.
 
 ## Instantiate scene archetypes
 
@@ -337,5 +367,5 @@ is complete, when a genuinely required capability is absent, or when another
 attempt would repeat a failed route without a concrete change.
 
 See `references/evidence.md`, `references/visual-grammar.md`,
-`references/asset-packs.md`, `references/scene-graph.md`, `references/pose-types.md`, `references/manim-lyrics.md`, `references/visual-out-contract.md`, and `references/field-notes.md`. Retain the
+`references/asset-packs.md`, `references/scene-graph.md`, `references/pose-types.md`, `references/pose-families.md`, `references/manim-lyrics.md`, `references/visual-out-contract.md`, and `references/field-notes.md`. Retain the
 bundled MIT `LICENSE` when copying the skill independently.
