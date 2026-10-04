@@ -35,7 +35,7 @@ class SceneContractTests(unittest.TestCase):
             "motion_defaults": {"actors": "hold_pose"}
         }
 
-    def actor(self, pose_type="seated_driver"):
+    def actor_v1(self, pose_type="seated_driver"):
         return {
             "schema": 1,
             "actor_id": "paul-bear",
@@ -48,6 +48,20 @@ class SceneContractTests(unittest.TestCase):
             ]
         }
 
+    def actor_v2(self):
+        return {
+            "schema": 2,
+            "actor_id": "paul-bear",
+            "pack_kind": "actor",
+            "source": "paul.png",
+            "poses": [
+                {"id": "forward", "type": "seated_driver", "gaze": "forward", "mouth": "closed", "interaction": "steering_wheel"},
+                {"id": "look", "type": "seated_driver", "gaze": "partner", "mouth": "smile", "interaction": "steering_wheel"},
+                {"id": "sing", "type": "seated_driver", "gaze": "forward", "mouth": "singing_open", "interaction": "steering_wheel"},
+                {"id": "phone", "type": "seated_driver", "gaze": "phone", "mouth": "soft_open", "interaction": "phone"}
+            ]
+        }
+
     def write(self, root, name, value):
         p = root / name
         p.write_text(json.dumps(value))
@@ -57,16 +71,33 @@ class SceneContractTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
             scene = scene_contract.load_scene(self.write(root, "scene.json", self.scene()))
-            actor = scene_contract.load_actor_sheet(self.write(root, "actor.json", self.actor()))
+            actor = scene_contract.load_actor_sheet(self.write(root, "actor.json", self.actor_v1()))
             result = scene_contract.compatible(scene, actor, "driver")
             self.assertTrue(result["compatible"])
             self.assertEqual(len(result["compatible_poses"]), 4)
+
+    def test_filters_gaze_and_mouth(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            scene = scene_contract.load_scene(self.write(root, "scene.json", self.scene()))
+            actor = scene_contract.load_actor_sheet(self.write(root, "actor.json", self.actor_v2()))
+            result = scene_contract.compatible(scene, actor, "driver", gaze="partner", mouth="smile")
+            self.assertTrue(result["compatible"])
+            self.assertEqual([p["id"] for p in result["compatible_poses"]], ["look"])
+
+    def test_filters_singing_pose(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            scene = scene_contract.load_scene(self.write(root, "scene.json", self.scene()))
+            actor = scene_contract.load_actor_sheet(self.write(root, "actor.json", self.actor_v2()))
+            result = scene_contract.compatible(scene, actor, "driver", mouth="singing_open")
+            self.assertEqual([p["id"] for p in result["compatible_poses"]], ["sing"])
 
     def test_rejects_incompatible_pose_type(self):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
             scene = scene_contract.load_scene(self.write(root, "scene.json", self.scene()))
-            actor = scene_contract.load_actor_sheet(self.write(root, "actor.json", self.actor("standing")))
+            actor = scene_contract.load_actor_sheet(self.write(root, "actor.json", self.actor_v1("standing")))
             result = scene_contract.compatible(scene, actor, "driver")
             self.assertFalse(result["compatible"])
             self.assertEqual(result["compatible_poses"], [])
