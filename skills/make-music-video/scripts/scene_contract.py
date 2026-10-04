@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Validate a character-free scene template and mechanically match typed actor poses to slots."""
+"""Validate character-free scenes and mechanically match/refine actor poses."""
 
 from __future__ import annotations
 
@@ -15,6 +15,16 @@ POSE_TYPES = {
     "seated_passenger", "seated_table", "reclined", "embrace",
     "performance", "custom"
 }
+GAZE_STATES = {
+    "forward", "partner", "down", "phone", "audience",
+    "offscreen_left", "offscreen_right", "eyes_closed"
+}
+MOUTH_STATES = {"closed", "smile", "soft_open", "singing_open", "hold_note"}
+INTERACTIONS = {
+    "none", "partner", "phone", "steering_wheel", "table",
+    "guitar", "microphone"
+}
+PACK_KINDS = {"actor", "interaction"}
 ROLES = {"environment", "set", "occluder", "foreground", "weather", "lighting", "graphics"}
 MAX_METADATA = 64 * 1024
 
@@ -96,34 +106,88 @@ def load_scene(path: Path) -> dict[str, Any]:
 
 def load_actor_sheet(path: Path) -> dict[str, Any]:
     value = read_json(path)
-    require(set(value) == {"schema", "actor_id", "source", "poses"},
-            "actor pose sheet must contain exactly actor_id, poses, schema, source")
-    require(value["schema"] == 1 and type(value["schema"]) is int, "unsupported actor sheet schema")
+    schema = value.get("schema")
+    require(type(schema) is int and schema in {1, 2}, "unsupported actor sheet schema")
+    if schema == 1:
+        require(set(value) == {"schema", "actor_id", "source", "poses"},
+                "schema 1 actor sheet must contain exactly actor_id, poses, schema, source")
+        pack_kind = "actor"
+    else:
+        require(set(value) == {"schema", "actor_id", "pack_kind", "source", "poses"},
+                "schema 2 actor sheet must contain exactly actor_id, pack_kind, poses, schema, source")
+        pack_kind = value["pack_kind"]
+        require(pack_kind in PACK_KINDS, f"pack_kind must be one of: {', '.join(sorted(PACK_KINDS))}")
+
     valid_name(value["actor_id"], "actor_id")
     require(isinstance(value["source"], str) and value["source"], "actor source must be nonempty")
     poses = value["poses"]
     require(isinstance(poses, list) and len(poses) == 4, "actor sheet must contain exactly four poses")
     seen: set[str] = set()
+    parsed = []
     for index, pose in enumerate(poses):
-        require(isinstance(pose, dict) and set(pose) == {"id", "type"},
-                f"poses[{index}] must contain exactly id and type")
-        pose_id = valid_name(pose["id"], f"poses[{index}].id")
+        if schema == 1:
+            require(isinstance(pose, dict) and set(pose) == {"id", "type"},
+                    f"poses[{index}] must contain exactly id and type")
+            normalized = {
+                "id": pose["id"], "type": pose["type"], "gaze": "forward",
+                "mouth": "closed", "interaction": "none"
+            }
+        else:
+            fields = {"id", "type", "gaze", "mouth", "interaction"}
+            require(isinstance(pose, dict) and set(pose) == fields,
+                    f"poses[{index}] must contain exactly: {', '.join(sorted(fields))}")
+            normalized = dict(pose)
+
+        pose_id = valid_name(normalized["id"], f"poses[{index}].id")
         require(pose_id not in seen, f"duplicate pose id: {pose_id}")
         seen.add(pose_id)
-        require(pose["type"] in POSE_TYPES, f"unknown pose type: {pose['type']}")
-    return value
+        require(normalized["type"] in POSE_TYPES, f"unknown pose type: {normalized['type']}")
+        require(normalized["gaze"] in GAZE_STATES, f"unknown gaze state: {normalized['gaze']}")
+        require(normalized["mouth"] in MOUTH_STATES, f"unknown mouth state: {normalized['mouth']}")
+        require(normalized["interaction"] in INTERACTIONS, f"unknown interaction: {normalized['interaction']}")
+        parsed.append(normalized)
+
+    if pack_kind == "interaction":
+        require(any(p["interaction"] != "none" for p in parsed),
+                "interaction pack must contain at least one non-none interaction state")
+
+    return {
+        "schema": schema,
+        "actor_id": value["actor_id"],
+        "pack_kind": pack_kind,
+        "source": value["source"],
+        "poses": parsed,
+    }
 
 
-def compatible(scene: dict[str, Any], actor: dict[str, Any], slot_id: str) -> dict[str, Any]:
+def compatible(scene: dict[str, Any], actor: dict[str, Any], slot_id: str,
+               *, gaze: str | None = None, mouth: str | None = None,
+               interaction: str | None = None) -> dict[str, Any]:
     slot = next((s for s in scene["actor_slots"] if s["id"] == slot_id), None)
     require(slot is not None, f"unknown scene slot: {slot_id}")
+    if gaze is not None:
+        require(gaze in GAZE_STATES, f"unknown gaze filter: {gaze}")
+    if mouth is not None:
+        require(mouth in MOUTH_STATES, f"unknown mouth filter: {mouth}")
+    if interaction is not None:
+        require(interaction in INTERACTIONS, f"unknown interaction filter: {interaction}")
+
     accepted = set(slot["accepts"])
     matches = [p for p in actor["poses"] if p["type"] in accepted]
+    if gaze is not None:
+        matches = [p for p in matches if p["gaze"] == gaze]
+    if mouth is not None:
+        matches = [p for p in matches if p["mouth"] == mouth]
+    if interaction is not None:
+        matches = [p for p in matches if p["interaction"] == interaction]
+
     return {
         "scene": scene["id"],
         "slot": slot_id,
         "accepts": slot["accepts"],
         "actor_id": actor["actor_id"],
+        "pack_kind": actor["pack_kind"],
+        "filters": {"gaze": gaze, "mouth": mouth, "interaction": interaction},
         "compatible_poses": matches,
         "compatible": bool(matches),
         "placement": {
@@ -145,6 +209,9 @@ def main() -> None:
     match.add_argument("scene", type=Path)
     match.add_argument("actor_sheet", type=Path)
     match.add_argument("--slot", required=True)
+    match.add_argument("--gaze", choices=sorted(GAZE_STATES))
+    match.add_argument("--mouth", choices=sorted(MOUTH_STATES))
+    match.add_argument("--interaction", choices=sorted(INTERACTIONS))
     args = parser.parse_args()
 
     try:
@@ -153,7 +220,10 @@ def main() -> None:
             print(json.dumps({"valid": True, "scene": scene["id"], "slots": [s["id"] for s in scene["actor_slots"]]}, indent=2))
         else:
             actor = load_actor_sheet(args.actor_sheet)
-            print(json.dumps(compatible(scene, actor, args.slot), indent=2))
+            print(json.dumps(compatible(
+                scene, actor, args.slot,
+                gaze=args.gaze, mouth=args.mouth, interaction=args.interaction
+            ), indent=2))
     except (OSError, json.JSONDecodeError, ValidationError) as error:
         parser.exit(2, f"scene-contract: {error}\n")
 
