@@ -1,12 +1,38 @@
 {
   "schema": 1,
   "id": "window-rain",
-  "idea": "A static or lightly animated subject sits behind moving rain, condensation, reflection and passing-light layers, producing depth and melancholy from inexpensive elements.",
+  "idea": "Apply moving rain, condensation, reflections and passing light as independent overlays to an already compiled character scene; do not bake rain into actor or set assets.",
+  "scene_agnostic": true,
   "inputs": {
-    "required": ["subject_or_room_still"],
-    "optional": ["rain_layer", "glass_reflection", "light_sweeps", "background_bokeh", "lyric_overlay"]
+    "required": [
+      "compiled_scene"
+    ],
+    "optional": [
+      "rain_layer",
+      "glass_reflection",
+      "light_sweeps",
+      "background_bokeh",
+      "manim_overlay"
+    ]
   },
-  "variation_knobs": ["rain_speed", "reflection_opacity", "focus_plane", "camera_push", "light_color", "text_density"],
-  "good_for": ["verse", "pre-chorus", "introspection"],
-  "avoid": ["placing every effect at the same depth or speed"]
+  "variation_knobs": [
+    "rain_speed",
+    "reflection_opacity",
+    "focus_plane",
+    "camera_push",
+    "light_color",
+    "text_density"
+  ],
+  "good_for": [
+    "verse",
+    "pre-chorus",
+    "introspection",
+    "diner",
+    "bedside",
+    "car"
+  ],
+  "avoid": [
+    "placing every effect at the same depth or speed",
+    "baking weather into actor sheets"
+  ]
 }
