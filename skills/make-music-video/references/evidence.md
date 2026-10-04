@@ -4,81 +4,93 @@
 
 ### 2026-10-04 local assembly probe
 
-The bundled helper was exercised in a local Debian tool environment with Python
-and `ffmpeg version 7.1.5-0+deb13u1`.
+The original helper was exercised in a local Debian tool environment with
+Python and FFmpeg. A generated 4.000-second mono WAV plus two generated PPM
+stills rendered successfully to a 640x360 H.264/AAC MP4. FFprobe reported one
+video stream, one audio stream, and exactly 4.000 seconds duration.
+
+That pass established bounded loading, path confinement, source-duration checks,
+render verification, and SHA-256 reporting.
+
+### 2026-10-04 phone-chat music-video probe
+
+The motivating phone conversation exercised the actual user-facing boundary
+without paid text-to-video inference.
 
 Input:
 
-- one generated 4.000-second mono WAV,
-- two generated PPM stills,
-- a two-shot 640x360, 30 fps manifest with two 2.0-second hard-cut shots.
+- one user-supplied finished WAV, duration 349.360 seconds;
+- exact lyrics and song structure supplied in the conversation;
+- native still-image generation for a recurring pair of romantic “sugar bear”
+  characters and a coherent noir roadside/motel visual world;
+- local FFmpeg motion/editing to turn those stills into a full-length composition.
 
 Observed result:
 
-- render exited successfully,
-- output size: 75,517 bytes,
-- output SHA-256: `5235b4f78dca9cc7a7521cb401358036f914777cae73e367b849ee5b6c4896e4`,
-- FFprobe reported one 640x360 video stream and one audio stream,
-- FFprobe format duration was exactly 4.000 seconds,
-- the helper's post-render verification accepted the file.
+- a complete 1280x720 H.264/AAC MP4 was created;
+- FFprobe reported 349.000 seconds duration;
+- output size was 23,419,040 bytes;
+- the artifact was delivered back into the phone conversation as a file/link.
 
-The same development pass added unit coverage for bounded project loading,
-mixed image/video command construction, project-directory path confinement,
-invalid image trimming fields, and the 4K-class pixel bound.
+The first generation route encountered a safety/model throttle and the user
+switched to a lower model. A subsequent visual-generation attempt completed
+quickly. The operational lesson is to establish a coherent anchor style, then
+reuse references and deterministic media primitives rather than assuming a
+particular high-tier generation model will remain available.
 
-### 2026-10-04 phone-chat Conjure-mode probe
+The user then identified two shortcomings in the first full-length cut:
 
-The motivating phone conversation then exercised a stronger path without paid
-video-generation inference.
+1. delivery should include a thumbnail/poster and should verify whether the host
+   actually renders an in-chat player rather than merely returning a file link;
+2. the stills were attractive but the visual grammar needed more variety than
+   repeated photographic reframing.
 
-Input:
+Those observations directly motivated schema 2 and the visual-grammar layer.
 
-- one user-supplied finished WAV, `My Sugar Bear.wav`, duration 349.360 seconds,
-- an exact lyric/section structure supplied by the user,
-- ChatGPT-native image generation for a recurring pair of romantic "sugar bear"
-  characters and a coherent noir roadside/motel visual world,
-- local FFmpeg motion/compositing to turn the generated stills into moving shots
-  and synchronize them to the supplied song.
+### 2026-10-04 schema-2 renderer probe
+
+The revised local renderer was exercised with a zero-cost 4.000-second fixture.
+It used two PPM stills, `push_in` and `pan_right` motion, and a fade-through-black
+boundary.
 
 Observed result:
 
-- a complete 5:49 music-video artifact was rendered,
-- 1280x720 H.264 video plus AAC audio were verified with FFprobe,
-- the master duration was 349.375 seconds,
-- a phone-oriented 960x540 H.264/AAC derivative was produced at 13,768,826 bytes,
-- the phone derivative SHA-256 was
-  `ba567b4fa9405fa531ecadbcf6c809165e2983bcc09e0d989f1f59ceb9f47568`,
-- sampled frames across intro, chorus, bridge, and outro showed the intended
-  progression from moonlit roadside/car imagery through motel-room imagery to
-  dawn.
+- 5 unit tests passed;
+- output: 640x360 H.264/AAC, exactly 4.000 seconds;
+- output size: 75,250 bytes;
+- output SHA-256: `7fc293b1a03ede81b4cd2dfbd4a26f20c1cdb12e5911cfe4be91c6d18565d227`;
+- JPEG poster size: 1,603 bytes;
+- poster SHA-256: `4dd29a6db15c8ee07b85c42496d080dd127e7f2a977ab5277403741e5f1fb893`;
+- FFprobe confirmed one video stream, one audio stream, and the requested frame
+  geometry.
 
-This is evidence that Conjure mode does **not** inherently require a paid
-text-to-video model. In a host with native still-image generation plus a local
-media runtime, a supplied song can be turned into an actual moving music-video
-artifact through deterministic motion, cuts, compositing, and encoding.
+Schema 1 remains backward-compatible. Schema 2 adds deterministic still motion,
+fade-through-black transitions, `poster_time`, and automatic poster extraction.
 
-The visual motion in this probe is generated from still images rather than a
-video diffusion model. That distinction should remain explicit.
+## What the probe establishes
+
+A useful music-video skill does **not** inherently require a paid generative-
+video provider. In a host with a supplied song, still-image generation, and a
+local media runtime, the agent can create an actual moving music-video artifact
+through authored reframing, compositing, typography/procedural clips, stock or
+existing footage, and deterministic assembly.
+
+Generated video remains useful for continuous action and difficult camera work,
+but it is an optional source type rather than the capability gate.
 
 ## Runway capability observation
 
-On 2026-10-04, ChatGPT's plugin directory returned a Runway integration whose
-declared capabilities include generating and editing images, videos, and audio,
-generating music and sound effects, and building multi-shot story videos
-directly from ChatGPT.
-
-The user connected Runway during the probe. The connected workspace was on the
-Free plan and exposed image models but no video-generation models, so Runway
-video generation was not used. That failure helped establish the fallback rule:
-paid generative-video access is optional acceleration, not the success gate.
+On 2026-10-04 the user connected Runway. The connected workspace exposed image
+models but no video-generation models because video generation required a paid
+plan. No Runway video generation was used. This established a concrete reason
+not to make paid provider access part of the portable GF contract.
 
 ## What is not proven
 
-This probe does not establish arbitrary text-to-song generation, lip sync,
-performance-video generation, photorealistic continuous motion, or universal
-mobile playback across every ChatGPT client.
+This evidence does not establish arbitrary text-to-song generation, lip sync,
+photorealistic continuous action, or universal inline playback across every
+ChatGPT client. The first phone delivery created and attached the MP4 but did
+not establish that the client rendered the desired thumbnail/player UI.
 
-The completed `P(HOP)` music video that originally motivated the build remains
-prior production experience rather than execution evidence for this package.
-The `My Sugar Bear` probe is the first end-to-end evidence attached directly
-to this build's intended Conjure-mode boundary.
+The completed `P(HOP)` music video that motivated the build remains prior
+production experience rather than execution evidence for this package.
