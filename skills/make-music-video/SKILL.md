@@ -73,7 +73,7 @@ separate delivery claim and must be observed rather than assumed.
 ## Start with the visual grammar
 
 Do not invent every shot independently. Read `references/visual-grammar.md`,
-`references/asset-packs.md`, `templates/catalog.json`, and
+`references/asset-packs.md`, `references/visual-out-contract.md`, `templates/catalog.json`, and
 `archetypes/catalog.json`, then choose:
 
 1. **one video template** for song-level attention and section roles;
@@ -100,6 +100,14 @@ Bundled archetypes include:
 Create another small style pack when the project needs a different world.
 
 This separation is how the skill gets variety without high cognitive load.
+
+## Script every visual-out call
+
+Before invoking image generation for a production asset, write a compact visual-out brief. Declare the artifact role, downstream use, subject/continuity lock, layout, camera/scale, background requirement, allowed variation, forbidden artifacts, and acceptance checks.
+
+This prevents a common failure: asking for an evocative concept and receiving a beautiful but unusable artifact class. A storyboard poster with baked timestamps, captions, borders, or a play icon is not a sprite atlas. A thumbnail prompt is not an environment-plate prompt. See `references/visual-out-contract.md` and `examples/visual-out-brief.json`.
+
+Inspect each generated visual against its brief before using it. Reject/regenerate when the output violates the asset contract; do not rationalize the wrong artifact merely because it looks good.
 
 ## Use asset packs, not one-shot images
 
@@ -278,5 +286,5 @@ is complete, when a genuinely required capability is absent, or when another
 attempt would repeat a failed route without a concrete change.
 
 See `references/evidence.md`, `references/visual-grammar.md`,
-`references/asset-packs.md`, and `references/field-notes.md`. Retain the
+`references/asset-packs.md`, `references/visual-out-contract.md`, and `references/field-notes.md`. Retain the
 bundled MIT `LICENSE` when copying the skill independently.
