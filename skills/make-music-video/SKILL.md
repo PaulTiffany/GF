@@ -73,8 +73,7 @@ separate delivery claim and must be observed rather than assumed.
 ## Start with the visual grammar
 
 Do not invent every shot independently. Read `references/visual-grammar.md`,
-`references/asset-packs.md`, `references/scene-graph.md`, `references/visual-out-contract.md`, `templates/catalog.json`, and
-`archetypes/catalog.json`, then choose:
+`references/asset-packs.md`, `references/scene-graph.md`, `references/pose-types.md`, `references/visual-out-contract.md`, `templates/catalog.json`, `scenes/catalog.json`, and `archetypes/catalog.json`, then choose:
 
 1. **one video template** for song-level attention and section roles;
 2. **one style pack** for world/continuity;
@@ -130,13 +129,48 @@ remembering frame coordinates. See `references/asset-packs.md` and
 This is especially valuable when stronger generation models are throttled:
 spend inference once on a coherent pack, then reuse it mechanically.
 
+## Mechanically split pose sheets
+
+The 2×2 actor-sheet layout is a file format, not a visual suggestion. Never use
+vision to find the four poses.
+
+```bash
+python scripts/pose_sheet.py examples/pose-sheet.json \
+  --output-dir /project/media/paul-bear-driving
+```
+
+The helper probes only dimensions, divides the source into four equal quadrants
+in row-major order, writes the four named PNGs, and returns exact crop
+coordinates, pose types, byte lengths, and SHA-256 values.
+
+If the image cannot be divided cleanly by those fixed quadrants, the generated
+sheet failed the visual-out contract and should be regenerated.
+
+## Match actors to character-free scenes
+
+Scenes are separate from actors. Choose a character-free scene template, then
+mechanically match actor poses to its typed slots.
+
+```bash
+python scripts/scene_contract.py validate scenes/car-front-seat.json
+python scripts/scene_contract.py match \
+  scenes/car-front-seat.json examples/pose-sheet.json --slot driver
+```
+
+The matcher returns only compatible poses plus the slot's normalized anchor,
+scale, z-order, facing hint, and occluder list. Do not visually improvise
+placement when a scene template already provides it.
+
+Bundled scene templates include `car-front-seat`, `diner-booth`,
+`standing-room`, and `bedside`.
+
 ## Instantiate scene archetypes
 
 An archetype is a reusable mini-directing recipe, not a finished shot.
 
 For example, `driving-loop` combines a moving road/environment plate, a separate car set/prop, one four-pose driver sheet, one four-pose passenger sheet, front-of-actor dashboard/glass occluders, plus optional foreground blur, rain and passing light. The bears are actors **inside** the car scene; they are not part of the car asset.
 
-Likewise, `slow-dance-loop`, `window-rain`, and `lyric-cloud` capture common
+Scene templates specify where actors fit; archetypes specify what moves over time. Likewise, `slow-dance-loop`, `window-rain`, and `lyric-cloud` capture common
 visual situations whose variation can be parameterized instead of re-invented.
 
 Prefer instantiating and varying archetypes before asking inference to regenerate
@@ -282,5 +316,5 @@ is complete, when a genuinely required capability is absent, or when another
 attempt would repeat a failed route without a concrete change.
 
 See `references/evidence.md`, `references/visual-grammar.md`,
-`references/asset-packs.md`, `references/scene-graph.md`, `references/visual-out-contract.md`, and `references/field-notes.md`. Retain the
+`references/asset-packs.md`, `references/scene-graph.md`, `references/pose-types.md`, `references/visual-out-contract.md`, and `references/field-notes.md`. Retain the
 bundled MIT `LICENSE` when copying the skill independently.
