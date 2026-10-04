@@ -1,0 +1,12 @@
+{
+  "schema": 1,
+  "id": "slow-dance-loop",
+  "idea": "A reusable couple sprite sequence performs a small looping sway while camera movement, light, particles and environment provide most of the visual evolution.",
+  "inputs": {
+    "required": ["couple_pose_or_sprite_pack", "background"],
+    "optional": ["spotlight", "rain", "dust", "neon_flicker", "lyric_overlay"]
+  },
+  "variation_knobs": ["sway_rate", "camera_push", "crop", "background_depth", "light_intensity", "overlay_density"],
+  "good_for": ["chorus", "bridge", "romantic refrain"],
+  "avoid": ["large limb motion without enough sprite poses", "changing character identity between loops"]
+}
