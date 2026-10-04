@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Validate and render a bounded hard-cut music-video timeline with FFmpeg."""
+"""Validate and render a bounded music-video timeline with FFmpeg."""
 
 from __future__ import annotations
 
@@ -8,12 +8,11 @@ import hashlib
 import json
 import shutil
 import subprocess
-import sys
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
-MAX_METADATA = 64 * 1024
+MAX_METADATA = 96 * 1024
 MAX_SHOTS = 300
 MAX_TIMELINE_SECONDS = 20 * 60
 MAX_SHOT_SECONDS = 120.0
@@ -21,6 +20,8 @@ MAX_INPUT_BYTES = 2 * 1024 * 1024 * 1024
 MAX_TOTAL_INPUT_BYTES = 10 * 1024 * 1024 * 1024
 MAX_DIMENSION = 3840
 MAX_PIXELS = 3840 * 2160
+MOTIONS = {"static", "push_in", "pull_out", "pan_left", "pan_right"}
+TRANSITIONS = {"cut", "fade_black"}
 
 
 class ValidationError(ValueError):
@@ -42,7 +43,7 @@ def unique_object(pairs: list[tuple[str, Any]]) -> dict[str, Any]:
 
 def read_json(path: Path) -> dict[str, Any]:
     data = path.read_bytes()
-    require(len(data) <= MAX_METADATA, "project manifest exceeds 64 KiB")
+    require(len(data) <= MAX_METADATA, "project manifest exceeds 96 KiB")
     value = json.loads(data, object_pairs_hook=unique_object)
     require(isinstance(value, dict), "project manifest must be a JSON object")
     return value
@@ -79,16 +80,20 @@ class Shot:
     kind: str
     duration: float
     source_start: float
+    motion: str
+    transition: str
 
 
 @dataclass(frozen=True)
 class Project:
     manifest: Path
+    schema: int
     title: str
     audio: Path
     width: int
     height: int
     fps: int
+    poster_time: float
     shots: tuple[Shot, ...]
 
     @property
@@ -100,9 +105,12 @@ def load_project(manifest: Path) -> Project:
     manifest = manifest.resolve()
     require(manifest.is_file(), f"missing project manifest: {manifest}")
     value = read_json(manifest)
-    expected = {"schema", "title", "audio", "width", "height", "fps", "shots"}
-    require(set(value) == expected, f"project fields must be exactly: {', '.join(sorted(expected))}")
-    require(value["schema"] == 1 and type(value["schema"]) is int, "unsupported project schema")
+    schema = value.get("schema")
+    require(type(schema) is int and schema in {1, 2}, "unsupported project schema")
+    required = {"schema", "title", "audio", "width", "height", "fps", "shots"}
+    optional = {"poster_time"} if schema == 2 else set()
+    require(required <= set(value) and set(value) <= required | optional,
+            f"project fields must be: {', '.join(sorted(required | optional))}")
     require(isinstance(value["title"], str) and value["title"].strip(), "title must be a nonempty string")
 
     width = integer(value["width"], "width", minimum=256, maximum=MAX_DIMENSION)
@@ -124,46 +132,97 @@ def load_project(manifest: Path) -> Project:
         require(isinstance(item, dict), f"{label} must be an object")
         require(item.get("kind") in {"image", "video"}, f"{label}.kind must be image or video")
         kind = item["kind"]
-        allowed = {"asset", "kind", "duration"} | ({"source_start"} if kind == "video" else set())
+        base_allowed = {"asset", "kind", "duration"} | ({"source_start"} if kind == "video" else set())
+        v2_allowed = {"motion", "transition"} if schema == 2 else set()
+        allowed = base_allowed | v2_allowed
         require(set(item) <= allowed and {"asset", "kind", "duration"} <= set(item),
                 f"{label} has invalid or missing fields")
         if kind == "image":
             require("source_start" not in item, f"{label}.source_start is only valid for video")
         duration = number(item["duration"], f"{label}.duration", minimum=0.10, maximum=MAX_SHOT_SECONDS)
         source_start = number(item.get("source_start", 0.0), f"{label}.source_start", minimum=0.0, maximum=MAX_TIMELINE_SECONDS)
+        motion = item.get("motion", "static" if kind == "image" else "native")
+        if kind == "image":
+            require(motion in MOTIONS, f"{label}.motion must be one of: {', '.join(sorted(MOTIONS))}")
+        else:
+            require(motion == "native", f"{label}.motion is only available for images")
+        transition = item.get("transition", "cut")
+        require(transition in TRANSITIONS, f"{label}.transition must be one of: {', '.join(sorted(TRANSITIONS))}")
         asset = safe_input(root, item["asset"], f"{label}.asset")
         total_bytes += asset.stat().st_size
-        shots.append(Shot(asset=asset, kind=kind, duration=duration, source_start=source_start))
+        shots.append(Shot(asset=asset, kind=kind, duration=duration, source_start=source_start,
+                          motion=motion, transition=transition))
 
     require(total_bytes <= MAX_TOTAL_INPUT_BYTES, "total local input size exceeds 10 GiB")
-    project = Project(manifest, value["title"].strip(), audio, width, height, fps, tuple(shots))
-    require(project.duration <= MAX_TIMELINE_SECONDS, "timeline exceeds 20 minutes")
-    return project
+    duration = sum(shot.duration for shot in shots)
+    require(duration <= MAX_TIMELINE_SECONDS, "timeline exceeds 20 minutes")
+    poster_time = number(value.get("poster_time", min(1.0, duration / 2)), "poster_time",
+                         minimum=0.0, maximum=duration)
+    return Project(manifest, schema, value["title"].strip(), audio, width, height, fps, poster_time, tuple(shots))
 
 
 def q(value: float) -> str:
     return f"{value:.6f}".rstrip("0").rstrip(".")
 
 
+def still_motion_filter(shot: Shot, project: Project) -> str:
+    base = (f"scale={project.width}:{project.height}:force_original_aspect_ratio=increase,"
+            f"crop={project.width}:{project.height}")
+    if shot.motion == "static":
+        return f"{base},fps={project.fps}"
+    frames = max(1, round(shot.duration * project.fps))
+    last = max(1, frames - 1)
+    if shot.motion == "push_in":
+        z = "min(zoom+0.0012,1.12)"
+        x = "iw/2-(iw/zoom/2)"
+    elif shot.motion == "pull_out":
+        z = "if(eq(on,0),1.12,max(zoom-0.0012,1.0))"
+        x = "iw/2-(iw/zoom/2)"
+    elif shot.motion == "pan_left":
+        z = "1.08"
+        x = f"(iw-iw/zoom)*(1-on/{last})"
+    else:  # pan_right
+        z = "1.08"
+        x = f"(iw-iw/zoom)*on/{last}"
+    y = "ih/2-(ih/zoom/2)"
+    return f"{base},zoompan=z='{z}':x='{x}':y='{y}':d=1:s={project.width}x{project.height}:fps={project.fps}"
+
+
+def visual_filter(index: int, shot: Shot, project: Project) -> str:
+    if shot.kind == "image":
+        chain = still_motion_filter(shot, project)
+    else:
+        chain = (f"scale={project.width}:{project.height}:force_original_aspect_ratio=increase,"
+                 f"crop={project.width}:{project.height},fps={project.fps}")
+    fade = min(0.45, shot.duration / 4)
+    if index > 0 and project.shots[index - 1].transition == "fade_black":
+        chain += f",fade=t=in:st=0:d={q(fade)}"
+    if shot.transition == "fade_black":
+        chain += f",fade=t=out:st={q(max(0.0, shot.duration - fade))}:d={q(fade)}"
+    chain += f",setsar=1,format=yuv420p,trim=duration={q(shot.duration)},setpts=PTS-STARTPTS"
+    return chain
+
+
+def poster_path_for(output: Path) -> Path:
+    return output.with_name(f"{output.stem}.poster.jpg")
+
+
 def ffmpeg_argv(project: Project, output: Path, *, force: bool = False) -> list[str]:
     args = ["ffmpeg", "-hide_banner", "-loglevel", "error", "-y" if force else "-n", "-i", str(project.audio)]
     for shot in project.shots:
         if shot.kind == "image":
-            args.extend(["-loop", "1", "-t", q(shot.duration), "-i", str(shot.asset)])
+            args.extend(["-framerate", str(project.fps), "-loop", "1", "-t", q(shot.duration), "-i", str(shot.asset)])
         else:
             if shot.source_start:
                 args.extend(["-ss", q(shot.source_start)])
             args.extend(["-t", q(shot.duration), "-i", str(shot.asset)])
 
-    filters = []
-    labels = []
-    for index, shot in enumerate(project.shots, start=1):
-        label = f"v{index - 1}"
-        filters.append(
-            f"[{index}:v:0]scale={project.width}:{project.height}:force_original_aspect_ratio=increase,"
-            f"crop={project.width}:{project.height},fps={project.fps},setsar=1,format=yuv420p,"
-            f"trim=duration={q(shot.duration)},setpts=PTS-STARTPTS[{label}]"
-        )
+    filters: list[str] = []
+    labels: list[str] = []
+    for zero_index, shot in enumerate(project.shots):
+        input_index = zero_index + 1
+        label = f"v{zero_index}"
+        filters.append(f"[{input_index}:v:0]{visual_filter(zero_index, shot, project)}[{label}]")
         labels.append(f"[{label}]")
     filters.append(f"{''.join(labels)}concat=n={len(labels)}:v=1:a=0[vout]")
 
@@ -181,6 +240,13 @@ def ffmpeg_argv(project: Project, output: Path, *, force: bool = False) -> list[
         str(output),
     ])
     return args
+
+
+def poster_argv(project: Project, output: Path, poster: Path, *, force: bool = False) -> list[str]:
+    return [
+        "ffmpeg", "-hide_banner", "-loglevel", "error", "-y" if force else "-n",
+        "-ss", q(project.poster_time), "-i", str(output), "-frames:v", "1", "-q:v", "2", str(poster)
+    ]
 
 
 def run_json_command(args: list[str], label: str) -> dict[str, Any]:
@@ -260,9 +326,11 @@ def verify_output(project: Project, output: Path) -> dict[str, Any]:
 
 
 def result_for(project: Project, output: Path, *, include_command: bool, force: bool = False) -> dict[str, Any]:
+    poster = poster_path_for(output.resolve())
     result: dict[str, Any] = {
         "title": project.title,
         "manifest": str(project.manifest),
+        "schema": project.schema,
         "audio": str(project.audio),
         "shot_count": len(project.shots),
         "duration_seconds": project.duration,
@@ -270,10 +338,23 @@ def result_for(project: Project, output: Path, *, include_command: bool, force: 
         "height": project.height,
         "fps": project.fps,
         "output": str(output.resolve()),
+        "poster": str(poster),
+        "poster_time": project.poster_time,
     }
     if include_command:
         result["ffmpeg_argv"] = ffmpeg_argv(project, output.resolve(), force=force)
+        result["poster_argv"] = poster_argv(project, output.resolve(), poster, force=force)
     return result
+
+
+def run_process(command: list[str], label: str) -> None:
+    try:
+        process = subprocess.run(command, check=False, text=True, capture_output=True)
+    except OSError as error:
+        raise ValidationError(f"cannot run {label}: {error}") from error
+    if process.returncode != 0:
+        detail = (process.stderr or process.stdout).strip()[-4000:]
+        raise ValidationError(f"{label} failed: {detail}")
 
 
 def main() -> None:
@@ -284,30 +365,31 @@ def main() -> None:
         cmd.add_argument("project", type=Path)
         cmd.add_argument("--output", type=Path, required=True)
         if name == "render":
-            cmd.add_argument("--force", action="store_true", help="Allow replacing an existing output file")
+            cmd.add_argument("--force", action="store_true", help="Allow replacing existing video/poster outputs")
     args = parser.parse_args()
 
     try:
         project = load_project(args.project)
         output = args.output.resolve()
+        poster = poster_path_for(output)
         if args.command == "plan":
             print(json.dumps(result_for(project, output, include_command=True), indent=2))
             return
 
-        if output.exists() and not args.force:
-            raise ValidationError("output already exists; pass --force only when replacement is intended")
+        if (output.exists() or poster.exists()) and not args.force:
+            raise ValidationError("output or poster already exists; pass --force only when replacement is intended")
         output.parent.mkdir(parents=True, exist_ok=True)
         preflight_media(project)
-        command = ffmpeg_argv(project, output, force=args.force)
-        process = subprocess.run(command, check=False, text=True, capture_output=True)
-        if process.returncode != 0:
-            detail = (process.stderr or process.stdout).strip()[-4000:]
-            raise ValidationError(f"ffmpeg render failed: {detail}")
+        run_process(ffmpeg_argv(project, output, force=args.force), "ffmpeg render")
         verified = verify_output(project, output)
+        run_process(poster_argv(project, output, poster, force=args.force), "poster extraction")
+        require(poster.is_file() and poster.stat().st_size > 0, "poster extraction did not create a nonempty image")
         result = result_for(project, output, include_command=False)
         result.update({
             "bytes": output.stat().st_size,
             "sha256": sha256(output),
+            "poster_bytes": poster.stat().st_size,
+            "poster_sha256": sha256(poster),
             "verified": verified,
         })
         print(json.dumps(result, indent=2))
