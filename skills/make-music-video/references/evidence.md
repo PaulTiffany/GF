@@ -94,3 +94,32 @@ not establish that the client rendered the desired thumbnail/player UI.
 
 The completed `P(HOP)` music video that motivated the build remains prior
 production experience rather than execution evidence for this package.
+
+
+## Negative evidence: sloppy sprite-archetype reel
+
+A follow-up experiment attempted to crop a generated composite asset sheet and
+use those crops as reusable sprites. The result was visibly poor and is retained
+as negative evidence rather than success.
+
+Root causes:
+
+- the sheet mixed actors, car/set content, scenery, labels, and fake
+  checkerboard transparency;
+- actor and prop roles were partially fused;
+- segmentation/keying was improvised after generation instead of guaranteed by
+  the visual-out contract;
+- the compositor tried to rescue an invalid asset class instead of rejecting it.
+
+The correction is structural:
+
+- one recurring actor per 2x2 four-pose sheet;
+- car/set is a separate asset;
+- road/environment is a separate plate;
+- dashboard/glass/table edges are explicit occluders;
+- weather/light/foreground are independent effect layers;
+- reject assets that collapse these roles when the archetype needs them
+  independently.
+
+The lesson is not merely “clean up the matte.” It is: **respect the scene graph
+before rendering.**
