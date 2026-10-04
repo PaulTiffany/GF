@@ -1,0 +1,13 @@
+{
+  "schema": 1,
+  "id": "performance-guitar",
+  "scene_template": "../scenes/performance-stage.json",
+  "idea": "Place one performance-compatible actor into a character-free stage and let camera, spotlights, haze, audience bokeh and Manim/procedural graphics intensify the instrumental section.",
+  "inputs": {
+    "required": ["character_free_scene_kit_for_performance-stage", "performer_actor_pack_4pose"],
+    "optional": ["guitar_prop", "mic_stand_front", "stage_haze", "spotlight", "audience_bokeh", "manim_overlay"]
+  },
+  "variation_knobs": ["performer_pose", "camera_push", "camera_pan", "spotlight_position", "haze_density", "overlay_intensity"],
+  "good_for": ["guitar solo", "instrumental", "performance hook"],
+  "avoid": ["regenerating a performer for every musical phrase", "literal karaoke text over every frame"]
+}
