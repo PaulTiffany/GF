@@ -66,6 +66,34 @@ A second recurring actor gets a second independent four-pose sheet. Do not put
 both actors into one pose cell unless the **pair itself** is intentionally the
 persistent object for a specific archetype.
 
+## Held-object exception
+
+Keep props separate **unless physical alignment with the actor is itself the
+interaction**.
+
+Examples such as a guitar held in both hands, a microphone held at the mouth, or
+a phone pressed to an ear can look broken when an independent prop is simply
+layered near a generic actor pose.
+
+For these cases, a four-pose **interaction pack** may intentionally fuse the
+actor with the held object. The fused actor+object pair becomes one reusable
+actor-layer asset for that archetype, while the surrounding scene remains
+separate.
+
+Example guitar interaction pack:
+
+- actor + same guitar in all four cells;
+- `guitar_rest`;
+- `guitar_play`;
+- `guitar_look_down`;
+- `guitar_hold_note`.
+
+The stage, mic stand, lights, haze, audience, Manim lyrics and camera remain
+independent layers.
+
+This exception does not permit arbitrary scene flattening. Fuse only the minimum
+objects whose contact geometry must remain exact.
+
 ## Acceptance rule
 
 Reject an upstream asset when it collapses scene roles needed by the intended
