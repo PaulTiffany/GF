@@ -1,0 +1,12 @@
+{
+  "schema": 1,
+  "id": "lyric-cloud",
+  "idea": "Words or short phrases become moving scene objects rather than subtitles: clustering, orbiting, scattering, raining, dissolving or reorganizing around a motif.",
+  "inputs": {
+    "required": ["selected_lyric_tokens"],
+    "optional": ["hero_still", "procedural_field", "mask", "motif_anchor"]
+  },
+  "variation_knobs": ["layout_rule", "velocity_field", "font_scale", "opacity", "token_density", "motif_anchor", "color_mapping"],
+  "good_for": ["bridge", "hook", "instrumental transition", "lyric-first video"],
+  "avoid": ["full-song karaoke treatment by default", "too much simultaneous readable text"]
+}
