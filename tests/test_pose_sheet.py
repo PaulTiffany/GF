@@ -24,15 +24,41 @@ class PoseSheetTests(unittest.TestCase):
         with self.assertRaisesRegex(pose_sheet.ValidationError, "even"):
             pose_sheet.crop_boxes(801, 600)
 
-    def test_manifest_requires_exactly_four_unique_names(self):
+    def test_manifest_returns_typed_poses(self):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
             (root / "sheet.png").write_bytes(b"x")
             manifest = root / "pose-sheet.json"
             manifest.write_text(json.dumps({
                 "schema": 1,
+                "actor_id": "paul-bear",
                 "source": "sheet.png",
-                "poses": ["standing", "seated", "standing", "reclined"]
+                "poses": [
+                    {"id": "drive", "type": "seated_driver"},
+                    {"id": "look", "type": "seated_driver"},
+                    {"id": "lean", "type": "seated_driver"},
+                    {"id": "phone", "type": "seated_driver"}
+                ]
+            }))
+            actor_id, _, poses = pose_sheet.load_manifest(manifest)
+            self.assertEqual(actor_id, "paul-bear")
+            self.assertEqual(poses[0], {"id": "drive", "type": "seated_driver"})
+
+    def test_manifest_rejects_duplicate_pose_ids(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            (root / "sheet.png").write_bytes(b"x")
+            manifest = root / "pose-sheet.json"
+            manifest.write_text(json.dumps({
+                "schema": 1,
+                "actor_id": "bear",
+                "source": "sheet.png",
+                "poses": [
+                    {"id": "same", "type": "standing"},
+                    {"id": "same", "type": "standing"},
+                    {"id": "three", "type": "standing"},
+                    {"id": "four", "type": "standing"}
+                ]
             }))
             with self.assertRaisesRegex(pose_sheet.ValidationError, "duplicate pose"):
                 pose_sheet.load_manifest(manifest)
@@ -43,10 +69,35 @@ class PoseSheetTests(unittest.TestCase):
             manifest = root / "pose-sheet.json"
             manifest.write_text(json.dumps({
                 "schema": 1,
+                "actor_id": "bear",
                 "source": "../sheet.png",
-                "poses": ["standing", "seated", "left", "right"]
+                "poses": [
+                    {"id": "one", "type": "standing"},
+                    {"id": "two", "type": "standing"},
+                    {"id": "three", "type": "standing"},
+                    {"id": "four", "type": "standing"}
+                ]
             }))
             with self.assertRaisesRegex(pose_sheet.ValidationError, "stay inside"):
+                pose_sheet.load_manifest(manifest)
+
+    def test_manifest_rejects_unknown_pose_type(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            (root / "sheet.png").write_bytes(b"x")
+            manifest = root / "pose-sheet.json"
+            manifest.write_text(json.dumps({
+                "schema": 1,
+                "actor_id": "bear",
+                "source": "sheet.png",
+                "poses": [
+                    {"id": "one", "type": "flying"},
+                    {"id": "two", "type": "standing"},
+                    {"id": "three", "type": "standing"},
+                    {"id": "four", "type": "standing"}
+                ]
+            }))
+            with self.assertRaisesRegex(pose_sheet.ValidationError, "must be one of"):
                 pose_sheet.load_manifest(manifest)
 
 
