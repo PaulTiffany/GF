@@ -1,9 +1,46 @@
 {
   "schema": 1,
   "scenes": [
-    {"id": "car-front-seat", "file": "car-front-seat.json", "pose_families": ["seated_driver", "seated_passenger"]},
-    {"id": "diner-booth", "file": "diner-booth.json", "pose_families": ["seated_table"]},
-    {"id": "standing-room", "file": "standing-room.json", "pose_families": ["standing", "standing_close", "embrace"]},
-    {"id": "bedside", "file": "bedside.json", "pose_families": ["seated", "reclined", "embrace"]}
+    {
+      "id": "car-front-seat",
+      "file": "car-front-seat.json",
+      "pose_families": [
+        "seated_driver",
+        "seated_passenger"
+      ]
+    },
+    {
+      "id": "diner-booth",
+      "file": "diner-booth.json",
+      "pose_families": [
+        "seated_table"
+      ]
+    },
+    {
+      "id": "standing-room",
+      "file": "standing-room.json",
+      "pose_families": [
+        "standing",
+        "standing_close",
+        "embrace"
+      ]
+    },
+    {
+      "id": "bedside",
+      "file": "bedside.json",
+      "pose_families": [
+        "seated",
+        "reclined",
+        "embrace"
+      ]
+    },
+    {
+      "id": "performance-stage",
+      "file": "performance-stage.json",
+      "pose_families": [
+        "performance",
+        "standing"
+      ]
+    }
   ]
 }
