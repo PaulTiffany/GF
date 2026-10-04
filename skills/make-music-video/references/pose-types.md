@@ -61,3 +61,28 @@ The agent no longer has to visually reason from scratch about whether a standing
 bear belongs in a diner booth or whether a reclined pose fits a car seat. The
 scene advertises the contract; the actor pack advertises its compatible pose
 types; selection can be validated before any compositing.
+
+
+## Performance state is orthogonal to body type
+
+Body compatibility answers **where can this actor fit?** Performance state answers
+**what is the actor doing emotionally/vocally inside that compatible body pose?**
+
+Schema-2 pose sheets add three bounded state dimensions:
+
+- **gaze** — `forward`, `partner`, `down`, `phone`, `audience`,
+  `offscreen_left`, `offscreen_right`, `eyes_closed`;
+- **mouth** — `closed`, `smile`, `soft_open`, `singing_open`,
+  `hold_note`;
+- **interaction** — `none`, `partner`, `phone`, `steering_wheel`,
+  `table`, `guitar`, `microphone`.
+
+A diner actor can therefore remain `seated_table` across all four cells while
+changing from listening → smiling at partner → soft singing → open singing.
+
+A driver can remain `seated_driver` while changing gaze or singing state.
+
+Use `scene_contract.py match --gaze ... --mouth ... --interaction ...` to filter
+compatible poses mechanically after the body-type match.
+
+See `pose-families.md` for reusable four-state families.
