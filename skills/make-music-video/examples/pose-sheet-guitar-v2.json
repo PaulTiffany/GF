@@ -1,0 +1,12 @@
+{
+  "schema": 2,
+  "actor_id": "paul-bear",
+  "pack_kind": "interaction",
+  "source": "media/paul-bear-guitar-2x2.png",
+  "poses": [
+    {"id": "guitar_rest", "type": "performance", "gaze": "audience", "mouth": "closed", "interaction": "guitar"},
+    {"id": "guitar_play", "type": "performance", "gaze": "audience", "mouth": "soft_open", "interaction": "guitar"},
+    {"id": "guitar_look_down", "type": "performance", "gaze": "down", "mouth": "closed", "interaction": "guitar"},
+    {"id": "guitar_hold_note", "type": "performance", "gaze": "offscreen_right", "mouth": "hold_note", "interaction": "guitar"}
+  ]
+}
