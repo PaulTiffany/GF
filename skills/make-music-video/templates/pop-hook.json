@@ -1,0 +1,17 @@
+{
+  "schema": 1,
+  "id": "pop-hook",
+  "purpose": "Hook-driven pop, internet-native AI pop, comic songs, and high-concept short-form visual language.",
+  "rules": {
+    "opening": "show the premise quickly",
+    "verse": "rotate 2-4 visual devices while preserving character/world continuity",
+    "pre_chorus": "increase density or withhold the signature hook image",
+    "chorus": "repeat a recognizable visual signature so the hook has a look",
+    "instrumental": "use graphic abstraction, dance-like motion, collage, or fast motif variation",
+    "bridge": "break the established grammar once",
+    "final_chorus": "combine the strongest earlier devices rather than introducing a new world",
+    "outro": "land a visual punchline, icon, or clean final pose"
+  },
+  "preferred_modules": ["hero_still", "kinetic_type", "collage", "procedural_field", "stock_insert", "native_clip"],
+  "pacing": {"default_shot_seconds": [1.5, 5], "hook_repetition": true}
+}
