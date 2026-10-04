@@ -1,0 +1,13 @@
+{
+  "schema": 1,
+  "id": "message-motif",
+  "idea": "Overlay a recurring time/message/phone motif on top of any compiled scene without changing the underlying actors or set.",
+  "scene_agnostic": true,
+  "inputs": {
+    "required": ["motif_text_or_value"],
+    "optional": ["phone_prop", "glow", "typing_cursor", "notification_pulse", "mask"]
+  },
+  "variation_knobs": ["screen_position", "font_scale", "pulse_rate", "opacity", "glow", "appear_behavior", "disappear_behavior"],
+  "good_for": ["recurring lyric motif", "1:11", "text message", "timestamp", "transition"],
+  "avoid": ["baking the motif into every source image", "using UI-like chrome when simple typography is more legible"]
+}
