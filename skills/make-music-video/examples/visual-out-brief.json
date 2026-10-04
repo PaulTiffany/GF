@@ -1,0 +1,57 @@
+{
+  "schema": 1,
+  "role": "sprite_atlas",
+  "downstream_use": ["driving-loop", "slow-dance-loop"],
+  "subject_lock": {
+    "subject": "the same recurring romantic teddy-bear couple",
+    "continuity": [
+      "male bear remains larger and wears the same black leather jacket",
+      "female bear remains smaller and wears the same black bow and black dress",
+      "fur colors and facial design remain constant"
+    ]
+  },
+  "layout": {
+    "type": "grid",
+    "columns": 4,
+    "rows": 2,
+    "one_pose_per_cell": true,
+    "cell_margin": "generous"
+  },
+  "camera": {
+    "framing": "full body or waist-up as appropriate",
+    "angle": "front or slight three-quarter",
+    "scale": "consistent across cells"
+  },
+  "background": {
+    "type": "flat",
+    "purpose": "easy segmentation"
+  },
+  "poses": [
+    "driving_forward",
+    "driving_leaning_close",
+    "looking_at_partner",
+    "phone_glance",
+    "slow_dance_left",
+    "slow_dance_right",
+    "forehead_touch",
+    "resting_together"
+  ],
+  "forbid": [
+    "text",
+    "labels",
+    "captions",
+    "timestamps",
+    "panel borders",
+    "UI chrome",
+    "play buttons",
+    "watermarks",
+    "overlapping cells",
+    "duplicate poses"
+  ],
+  "acceptance": [
+    "all eight requested poses are present",
+    "subjects remain recognizably identical across cells",
+    "every pose can be cropped without touching another cell",
+    "no forbidden artifact is visible"
+  ]
+}
