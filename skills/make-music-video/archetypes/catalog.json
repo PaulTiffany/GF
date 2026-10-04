@@ -86,6 +86,16 @@
         "recurring motif",
         "transition"
       ]
+    },
+    {
+      "id": "performance-vocal",
+      "file": "performance-vocal.json",
+      "use_for": [
+        "chorus",
+        "bridge",
+        "vocal climax",
+        "performance"
+      ]
     }
   ]
 }
