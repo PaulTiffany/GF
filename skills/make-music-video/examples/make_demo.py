@@ -36,15 +36,18 @@ def main() -> None:
     write_ppm(media / "opening.ppm", (30, 80, 180))
     write_ppm(media / "closing.ppm", (180, 60, 80))
     project = {
-        "schema": 1,
+        "schema": 2,
         "title": "GF music-video demo",
         "audio": "media/song.wav",
         "width": 640,
         "height": 360,
-        "fps": 30,
+        "fps": 24,
+        "poster_time": 1.0,
         "shots": [
-            {"asset": "media/opening.ppm", "kind": "image", "duration": 2.0},
-            {"asset": "media/closing.ppm", "kind": "image", "duration": 2.0}
+            {"asset": "media/opening.ppm", "kind": "image", "duration": 2.0,
+             "motion": "push_in", "transition": "fade_black"},
+            {"asset": "media/closing.ppm", "kind": "image", "duration": 2.0,
+             "motion": "pan_right"}
         ]
     }
     manifest = root / "music-video.json"
