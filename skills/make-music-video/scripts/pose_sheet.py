@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Mechanically split a fixed 2x2 single-actor pose sheet into four named cells."""
+"""Mechanically split a fixed 2x2 single-actor pose sheet into four typed cells."""
 
 from __future__ import annotations
 
@@ -13,6 +13,11 @@ from pathlib import Path
 from typing import Any
 
 NAME_RE = re.compile(r"^[a-z0-9][a-z0-9_-]{0,63}$")
+POSE_TYPES = {
+    "standing", "standing_close", "seated", "seated_driver",
+    "seated_passenger", "seated_table", "reclined", "embrace",
+    "performance", "custom"
+}
 MAX_METADATA = 32 * 1024
 MAX_INPUT_BYTES = 128 * 1024 * 1024
 MIN_CELL = 128
@@ -46,21 +51,31 @@ def safe_source(root: Path, name: Any) -> Path:
     return path
 
 
-def load_manifest(path: Path) -> tuple[Path, tuple[str, ...]]:
+def load_manifest(path: Path) -> tuple[str, Path, tuple[dict[str, str], ...]]:
     path = path.resolve()
     value = read_json(path)
-    require(set(value) == {"schema", "source", "poses"},
-            "pose-sheet fields must be exactly: poses, schema, source")
+    require(set(value) == {"schema", "actor_id", "source", "poses"},
+            "pose-sheet fields must be exactly: actor_id, poses, schema, source")
     require(value["schema"] == 1 and type(value["schema"]) is int, "unsupported pose-sheet schema")
+    actor_id = value["actor_id"]
+    require(isinstance(actor_id, str) and NAME_RE.fullmatch(actor_id) is not None,
+            f"actor_id must match {NAME_RE.pattern}")
     poses = value["poses"]
-    require(isinstance(poses, list) and len(poses) == 4, "poses must contain exactly four names")
-    names: list[str] = []
+    require(isinstance(poses, list) and len(poses) == 4, "poses must contain exactly four typed entries")
+    parsed: list[dict[str, str]] = []
+    seen: set[str] = set()
     for index, pose in enumerate(poses):
-        require(isinstance(pose, str) and NAME_RE.fullmatch(pose) is not None,
-                f"poses[{index}] must match {NAME_RE.pattern}")
-        require(pose not in names, f"duplicate pose name: {pose}")
-        names.append(pose)
-    return safe_source(path.parent, value["source"]), tuple(names)
+        require(isinstance(pose, dict) and set(pose) == {"id", "type"},
+                f"poses[{index}] must contain exactly id and type")
+        pose_id, pose_type = pose["id"], pose["type"]
+        require(isinstance(pose_id, str) and NAME_RE.fullmatch(pose_id) is not None,
+                f"poses[{index}].id must match {NAME_RE.pattern}")
+        require(pose_id not in seen, f"duplicate pose name: {pose_id}")
+        require(isinstance(pose_type, str) and pose_type in POSE_TYPES,
+                f"poses[{index}].type must be one of: {', '.join(sorted(POSE_TYPES))}")
+        seen.add(pose_id)
+        parsed.append({"id": pose_id, "type": pose_type})
+    return actor_id, safe_source(path.parent, value["source"]), tuple(parsed)
 
 
 def crop_boxes(width: int, height: int) -> tuple[tuple[int, int, int, int], ...]:
@@ -113,19 +128,19 @@ def sha256(path: Path) -> str:
 
 def slice_sheet(manifest: Path, output_dir: Path, *, force: bool = False) -> dict[str, Any]:
     require(shutil.which("ffmpeg") is not None, "ffmpeg is not available on PATH")
-    source, names = load_manifest(manifest)
+    actor_id, source, poses = load_manifest(manifest)
     width, height = probe_dimensions(source)
     boxes = crop_boxes(width, height)
     output_dir = output_dir.resolve()
     output_dir.mkdir(parents=True, exist_ok=True)
 
-    planned = [output_dir / f"{name}.png" for name in names]
+    planned = [output_dir / f"{pose['id']}.png" for pose in poses]
     if not force:
         existing = [p.name for p in planned if p.exists()]
         require(not existing, f"output files already exist: {', '.join(existing)}")
 
     results = []
-    for name, (x, y, w, h), out in zip(names, boxes, planned):
+    for pose, (x, y, w, h), out in zip(poses, boxes, planned):
         command = [
             "ffmpeg", "-hide_banner", "-loglevel", "error",
             "-y" if force else "-n", "-i", str(source),
@@ -134,10 +149,11 @@ def slice_sheet(manifest: Path, output_dir: Path, *, force: bool = False) -> dic
         process = subprocess.run(command, check=False, text=True, capture_output=True)
         if process.returncode != 0:
             detail = (process.stderr or process.stdout).strip()[-2000:]
-            raise ValidationError(f"ffmpeg crop failed for {name}: {detail}")
-        require(out.is_file() and out.stat().st_size > 0, f"missing crop output for {name}")
+            raise ValidationError(f"ffmpeg crop failed for {pose['id']}: {detail}")
+        require(out.is_file() and out.stat().st_size > 0, f"missing crop output for {pose['id']}")
         results.append({
-            "pose": name,
+            "id": pose["id"],
+            "type": pose["type"],
             "row": 0 if y == 0 else 1,
             "column": 0 if x == 0 else 1,
             "crop": {"x": x, "y": y, "width": w, "height": h},
@@ -148,6 +164,7 @@ def slice_sheet(manifest: Path, output_dir: Path, *, force: bool = False) -> dic
 
     return {
         "schema": 1,
+        "actor_id": actor_id,
         "source": str(source),
         "source_width": width,
         "source_height": height,
