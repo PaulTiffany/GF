@@ -1,0 +1,47 @@
+{
+  "schema": 1,
+  "id": "make-music-video",
+  "summary": "Direct a provider-neutral music-video workflow and render a bounded local shot timeline to a verified MP4.",
+  "skill": "SKILL.md",
+  "entrypoint": "scripts/music_video.py",
+  "license": "LICENSE",
+  "requires": [
+    "Python 3.10+",
+    "FFmpeg and FFprobe for render mode",
+    "A writable workspace containing the finished audio track and accepted local visual assets",
+    "Optional host-specific media generation or retrieval tools only when the requested production needs them"
+  ],
+  "inputs": [
+    "One local JSON project manifest with a finished audio path, output geometry, frame rate, and ordered shots",
+    "Local still images and/or video clips referenced from inside the manifest directory",
+    "An explicit output MP4 path"
+  ],
+  "outputs": [
+    "A deterministic FFmpeg render plan in plan mode",
+    "A verified H.264/AAC MP4 in render mode",
+    "JSON media facts including duration, dimensions, byte length, and SHA-256 after rendering"
+  ],
+  "effects": ["local-read", "local-write"],
+  "bounds": {
+    "enforced": [
+      "At most 300 shots and 20 minutes of declared timeline",
+      "At most 120 seconds per shot and 60 frames per second",
+      "Even output dimensions with at most 3840 pixels per side and at most 3840x2160 total pixels",
+      "Each local input at most 2 GiB and all local inputs together at most 10 GiB",
+      "Manifest inputs must resolve inside the manifest directory",
+      "Existing output is not replaced unless --force is explicit",
+      "Audio duration and trimmed video-source durations are probed before rendering"
+    ],
+    "operator": [
+      "Keep paid generation, remote retrieval, account writes, and publishing inside the user's authorized task scope",
+      "Review generated or retrieved media rights, likenesses, and platform requirements before distribution",
+      "Watch the complete export before making an artistic-quality or audience-playback claim"
+    ]
+  },
+  "stop_when": [
+    "The requested MP4 is rendered and FFprobe verification succeeds",
+    "A required local asset, FFmpeg runtime, or compatible audio/timeline duration is absent",
+    "Another attempt would repeat a failed generation or render route without a concrete change"
+  ],
+  "evidence": ["references/evidence.md", "references/field-notes.md"]
+}
