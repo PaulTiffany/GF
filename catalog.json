@@ -27,7 +27,8 @@
       "checks": [
         "tests/test_music_video.py",
         "tests/test_pose_sheet.py",
-        "tests/test_scene_contract.py"
+        "tests/test_scene_contract.py",
+        "tests/test_lyric_overlay.py"
       ]
     }
   ]
