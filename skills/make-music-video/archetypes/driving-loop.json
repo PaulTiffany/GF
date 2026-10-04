@@ -1,30 +1,83 @@
 {
   "schema": 1,
   "id": "driving-loop",
-  "idea": "Persistent character/vehicle sprites ride over a seamless or loopable moving road plate, with blur, lighting and weather layers creating convincing motion without generated video.",
+  "idea": "Build a driving scene from independent layers: moving environment, car prop/set, driver actor, passenger actor, front-of-actor occluders such as dashboard/glass, and optional weather/light/foreground motion.",
   "inputs": {
-    "required": ["vehicle_or_character_pack", "repeatable_background"],
-    "optional": ["foreground_blur", "rain_overlay", "light_sweeps", "dashboard_layer", "lyric_overlay"]
+    "required": [
+      "repeatable_background",
+      "car_prop_or_set",
+      "driver_actor_pack_4pose",
+      "passenger_actor_pack_4pose"
+    ],
+    "optional": [
+      "glass_or_dashboard_occluder",
+      "foreground_blur",
+      "rain_overlay",
+      "light_sweeps",
+      "lyric_overlay"
+    ]
   },
   "composition": [
-    {"layer": "background", "behavior": "scroll_or_pan_loop", "notes": "Prefer a horizontally repeatable or long plate; blur and slight scale hide seams."},
-    {"layer": "vehicle", "behavior": "persistent_sprite", "notes": "Hold position or add tiny vertical/rotational oscillation."},
-    {"layer": "characters", "behavior": "pose_or_sprite_sequence", "notes": "Swap semantic poses such as driving, leaning_close, looking_over, singing."},
-    {"layer": "foreground", "behavior": "fast_parallax", "notes": "Optional blurred poles, guardrails, rain, branches or light streaks sell speed."},
-    {"layer": "lighting", "behavior": "periodic_sweep", "notes": "Headlights, neon, moonlight or passing street lamps can pulse independently."}
+    {
+      "layer": "environment",
+      "behavior": "scroll_or_pan_loop",
+      "notes": "Road/city/landscape moves behind the scene. Prefer a loopable or long plate."
+    },
+    {
+      "layer": "car",
+      "behavior": "persistent_prop",
+      "notes": "Car or car-interior set is independent from the bears and can bob/scale/shift as a whole."
+    },
+    {
+      "layer": "driver",
+      "behavior": "placed_actor",
+      "notes": "Select one pose from the driver's four-pose sheet and place it into the car."
+    },
+    {
+      "layer": "passenger",
+      "behavior": "placed_actor",
+      "notes": "Select one pose independently from the passenger's four-pose sheet."
+    },
+    {
+      "layer": "occluders",
+      "behavior": "front_layer",
+      "notes": "Steering wheel, dashboard, windshield frame or glass can sit in front of actors for believable depth."
+    },
+    {
+      "layer": "foreground",
+      "behavior": "fast_parallax",
+      "notes": "Blurred poles, guardrails, rain, branches or light streaks sell speed."
+    },
+    {
+      "layer": "lighting",
+      "behavior": "periodic_sweep",
+      "notes": "Headlights, neon, moonlight or street lamps affect the scene without fusing asset roles."
+    }
   ],
   "variation_knobs": [
     "background_scroll_speed",
     "camera_crop",
-    "vehicle_scale",
-    "character_pose",
+    "car_bob",
+    "driver_pose",
+    "passenger_pose",
+    "actor_placement",
     "foreground_parallax_speed",
     "rain_density",
     "light_sweep_frequency",
     "color_grade",
     "lyric_or_motif_overlay"
   ],
-  "reuse": "One generated sprite atlas plus one repeatable road plate can support many visually distinct shots across a song.",
-  "good_for": ["verses", "instrumentals", "transitions", "recurring road motif"],
-  "avoid": ["perfectly static vehicle with no secondary motion", "visible background seams", "regenerating the whole scene for every shot"]
+  "reuse": "One road/environment plate, one car set/prop, and two independent four-pose actor sheets can support many driving shots.",
+  "good_for": [
+    "verses",
+    "instrumentals",
+    "transitions",
+    "recurring road motif"
+  ],
+  "avoid": [
+    "fusing bears into the car asset",
+    "using a whole-scene still when independent actor pose changes are needed",
+    "visible background seams",
+    "regenerating the whole scene for every shot"
+  ]
 }
