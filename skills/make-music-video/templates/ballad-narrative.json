@@ -1,0 +1,17 @@
+{
+  "schema": 1,
+  "id": "ballad-narrative",
+  "purpose": "Slow or mid-tempo songs whose emotional arc matters more than constant novelty.",
+  "rules": {
+    "opening": "establish world and recurring subjects; hold longer than feels fashionable",
+    "verse": "narrative or intimate detail; alternate wides and closeups",
+    "pre_chorus": "tighten framing or introduce a recurring motif",
+    "chorus": "return to one iconic visual idea with greater scale or intensity",
+    "instrumental": "leave literal storytelling and permit abstraction, travel, stock texture, or procedural motion",
+    "bridge": "reduce visual density; one vulnerable image or sparse typography",
+    "final_chorus": "resolve earlier motifs and increase light, scale, or motion",
+    "outro": "one memorable closing image; permit a long hold"
+  },
+  "preferred_modules": ["hero_still", "slow_reframe", "motif_text", "stock_texture", "procedural_field", "native_clip"],
+  "pacing": {"default_shot_seconds": [4, 10], "avoid": "cutting on every beat"}
+}
