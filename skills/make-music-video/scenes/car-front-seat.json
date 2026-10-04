@@ -1,0 +1,41 @@
+{
+  "schema": 1,
+  "id": "car-front-seat",
+  "character_free": true,
+  "required_assets": [
+    {"id": "environment", "role": "environment", "z": 10},
+    {"id": "car_back", "role": "set", "z": 20},
+    {"id": "dashboard_front", "role": "occluder", "z": 40}
+  ],
+  "optional_assets": [
+    {"id": "windshield_reflection", "role": "lighting", "z": 50},
+    {"id": "rain", "role": "weather", "z": 60},
+    {"id": "foreground_bokeh", "role": "foreground", "z": 70}
+  ],
+  "actor_slots": [
+    {
+      "id": "driver",
+      "accepts": ["seated_driver"],
+      "anchor": {"x": 0.43, "y": 0.57},
+      "scale": 0.34,
+      "facing": "front_three_quarter",
+      "z": 30,
+      "occluded_by": ["dashboard_front"]
+    },
+    {
+      "id": "passenger",
+      "accepts": ["seated_passenger", "seated"],
+      "anchor": {"x": 0.61, "y": 0.58},
+      "scale": 0.32,
+      "facing": "front_three_quarter",
+      "z": 31,
+      "occluded_by": ["dashboard_front"]
+    }
+  ],
+  "motion_defaults": {
+    "environment": "horizontal_scroll",
+    "set": "subtle_bob",
+    "actors": "hold_pose",
+    "camera": "slow_push_or_hold"
+  }
+}
