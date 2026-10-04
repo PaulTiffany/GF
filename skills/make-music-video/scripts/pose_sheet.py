@@ -18,6 +18,16 @@ POSE_TYPES = {
     "seated_passenger", "seated_table", "reclined", "embrace",
     "performance", "custom"
 }
+GAZE_STATES = {
+    "forward", "partner", "down", "phone", "audience",
+    "offscreen_left", "offscreen_right", "eyes_closed"
+}
+MOUTH_STATES = {"closed", "smile", "soft_open", "singing_open", "hold_note"}
+INTERACTIONS = {
+    "none", "partner", "phone", "steering_wheel", "table",
+    "guitar", "microphone"
+}
+PACK_KINDS = {"actor", "interaction"}
 MAX_METADATA = 32 * 1024
 MAX_INPUT_BYTES = 128 * 1024 * 1024
 MIN_CELL = 128
@@ -51,31 +61,87 @@ def safe_source(root: Path, name: Any) -> Path:
     return path
 
 
-def load_manifest(path: Path) -> tuple[str, Path, tuple[dict[str, str], ...]]:
+def _validate_pose_v1(pose: Any, index: int, seen: set[str]) -> dict[str, str]:
+    require(isinstance(pose, dict) and set(pose) == {"id", "type"},
+            f"poses[{index}] must contain exactly id and type")
+    pose_id, pose_type = pose["id"], pose["type"]
+    require(isinstance(pose_id, str) and NAME_RE.fullmatch(pose_id) is not None,
+            f"poses[{index}].id must match {NAME_RE.pattern}")
+    require(pose_id not in seen, f"duplicate pose name: {pose_id}")
+    require(isinstance(pose_type, str) and pose_type in POSE_TYPES,
+            f"poses[{index}].type must be one of: {', '.join(sorted(POSE_TYPES))}")
+    seen.add(pose_id)
+    return {
+        "id": pose_id,
+        "type": pose_type,
+        "gaze": "forward",
+        "mouth": "closed",
+        "interaction": "none",
+    }
+
+
+def _validate_pose_v2(pose: Any, index: int, seen: set[str]) -> dict[str, str]:
+    fields = {"id", "type", "gaze", "mouth", "interaction"}
+    require(isinstance(pose, dict) and set(pose) == fields,
+            f"poses[{index}] must contain exactly: {', '.join(sorted(fields))}")
+    pose_id, pose_type = pose["id"], pose["type"]
+    require(isinstance(pose_id, str) and NAME_RE.fullmatch(pose_id) is not None,
+            f"poses[{index}].id must match {NAME_RE.pattern}")
+    require(pose_id not in seen, f"duplicate pose name: {pose_id}")
+    require(isinstance(pose_type, str) and pose_type in POSE_TYPES,
+            f"poses[{index}].type must be one of: {', '.join(sorted(POSE_TYPES))}")
+    require(pose["gaze"] in GAZE_STATES,
+            f"poses[{index}].gaze must be one of: {', '.join(sorted(GAZE_STATES))}")
+    require(pose["mouth"] in MOUTH_STATES,
+            f"poses[{index}].mouth must be one of: {', '.join(sorted(MOUTH_STATES))}")
+    require(pose["interaction"] in INTERACTIONS,
+            f"poses[{index}].interaction must be one of: {', '.join(sorted(INTERACTIONS))}")
+    seen.add(pose_id)
+    return {
+        "id": pose_id,
+        "type": pose_type,
+        "gaze": pose["gaze"],
+        "mouth": pose["mouth"],
+        "interaction": pose["interaction"],
+    }
+
+
+def load_manifest(path: Path) -> tuple[int, str, str, Path, tuple[dict[str, str], ...]]:
     path = path.resolve()
     value = read_json(path)
-    require(set(value) == {"schema", "actor_id", "source", "poses"},
-            "pose-sheet fields must be exactly: actor_id, poses, schema, source")
-    require(value["schema"] == 1 and type(value["schema"]) is int, "unsupported pose-sheet schema")
+    schema = value.get("schema")
+    require(type(schema) is int and schema in {1, 2}, "unsupported pose-sheet schema")
+
+    if schema == 1:
+        require(set(value) == {"schema", "actor_id", "source", "poses"},
+                "schema 1 fields must be exactly: actor_id, poses, schema, source")
+        pack_kind = "actor"
+    else:
+        require(set(value) == {"schema", "actor_id", "pack_kind", "source", "poses"},
+                "schema 2 fields must be exactly: actor_id, pack_kind, poses, schema, source")
+        pack_kind = value["pack_kind"]
+        require(pack_kind in PACK_KINDS,
+                f"pack_kind must be one of: {', '.join(sorted(PACK_KINDS))}")
+
     actor_id = value["actor_id"]
     require(isinstance(actor_id, str) and NAME_RE.fullmatch(actor_id) is not None,
             f"actor_id must match {NAME_RE.pattern}")
+
     poses = value["poses"]
-    require(isinstance(poses, list) and len(poses) == 4, "poses must contain exactly four typed entries")
+    require(isinstance(poses, list) and len(poses) == 4,
+            "poses must contain exactly four typed entries")
+
     parsed: list[dict[str, str]] = []
     seen: set[str] = set()
     for index, pose in enumerate(poses):
-        require(isinstance(pose, dict) and set(pose) == {"id", "type"},
-                f"poses[{index}] must contain exactly id and type")
-        pose_id, pose_type = pose["id"], pose["type"]
-        require(isinstance(pose_id, str) and NAME_RE.fullmatch(pose_id) is not None,
-                f"poses[{index}].id must match {NAME_RE.pattern}")
-        require(pose_id not in seen, f"duplicate pose name: {pose_id}")
-        require(isinstance(pose_type, str) and pose_type in POSE_TYPES,
-                f"poses[{index}].type must be one of: {', '.join(sorted(POSE_TYPES))}")
-        seen.add(pose_id)
-        parsed.append({"id": pose_id, "type": pose_type})
-    return actor_id, safe_source(path.parent, value["source"]), tuple(parsed)
+        parsed.append(_validate_pose_v1(pose, index, seen) if schema == 1
+                      else _validate_pose_v2(pose, index, seen))
+
+    if pack_kind == "interaction":
+        require(any(p["interaction"] != "none" for p in parsed),
+                "interaction pack must contain at least one non-none interaction state")
+
+    return schema, actor_id, pack_kind, safe_source(path.parent, value["source"]), tuple(parsed)
 
 
 def crop_boxes(width: int, height: int) -> tuple[tuple[int, int, int, int], ...]:
@@ -128,7 +194,7 @@ def sha256(path: Path) -> str:
 
 def slice_sheet(manifest: Path, output_dir: Path, *, force: bool = False) -> dict[str, Any]:
     require(shutil.which("ffmpeg") is not None, "ffmpeg is not available on PATH")
-    actor_id, source, poses = load_manifest(manifest)
+    schema, actor_id, pack_kind, source, poses = load_manifest(manifest)
     width, height = probe_dimensions(source)
     boxes = crop_boxes(width, height)
     output_dir = output_dir.resolve()
@@ -151,9 +217,8 @@ def slice_sheet(manifest: Path, output_dir: Path, *, force: bool = False) -> dic
             detail = (process.stderr or process.stdout).strip()[-2000:]
             raise ValidationError(f"ffmpeg crop failed for {pose['id']}: {detail}")
         require(out.is_file() and out.stat().st_size > 0, f"missing crop output for {pose['id']}")
-        results.append({
-            "id": pose["id"],
-            "type": pose["type"],
+        item = dict(pose)
+        item.update({
             "row": 0 if y == 0 else 1,
             "column": 0 if x == 0 else 1,
             "crop": {"x": x, "y": y, "width": w, "height": h},
@@ -161,10 +226,12 @@ def slice_sheet(manifest: Path, output_dir: Path, *, force: bool = False) -> dic
             "bytes": out.stat().st_size,
             "sha256": sha256(out),
         })
+        results.append(item)
 
     return {
-        "schema": 1,
+        "schema": schema,
         "actor_id": actor_id,
+        "pack_kind": pack_kind,
         "source": str(source),
         "source_width": width,
         "source_height": height,
