@@ -1,46 +1,46 @@
 {
   "schema": 1,
   "id": "make-music-video",
-  "summary": "Direct a provider-neutral music-video workflow and render a bounded local shot timeline to a verified MP4.",
+  "summary": "Conjure a playable music video when the host has media-generation tools, with bounded local FFmpeg assembly as the last mile.",
   "skill": "SKILL.md",
   "entrypoint": "scripts/music_video.py",
   "license": "LICENSE",
   "requires": [
-    "Python 3.10+",
-    "FFmpeg and FFprobe for render mode",
-    "A writable workspace containing the finished audio track and accepted local visual assets",
-    "Optional host-specific media generation or retrieval tools only when the requested production needs them"
+    "For Conjure mode: a connected host capability able to generate moving video media; music/audio generation or a user-supplied finished song is also required",
+    "For local assembly: Python 3.10+, FFmpeg, FFprobe, and a writable workspace",
+    "A compatible media presentation surface if the result is expected to appear directly in chat"
   ],
   "inputs": [
-    "One local JSON project manifest with a finished audio path, output geometry, frame rate, and ordered shots",
-    "Local still images and/or video clips referenced from inside the manifest directory",
-    "An explicit output MP4 path"
+    "Conjure mode: the user's creative brief and either a supplied song or authority/capability to generate one",
+    "Assembly mode: one local JSON project manifest plus the referenced local audio and visual assets",
+    "An explicit output MP4 path when using the bundled renderer"
   ],
   "outputs": [
-    "A deterministic FFmpeg render plan in plan mode",
-    "A verified H.264/AAC MP4 in render mode",
-    "JSON media facts including duration, dimensions, byte length, and SHA-256 after rendering"
+    "Conjure mode: an actual playable music-video artifact from a capable host/provider",
+    "Assembly mode: a deterministic FFmpeg render plan and a verified H.264/AAC MP4",
+    "JSON media facts including duration, dimensions, byte length, and SHA-256 after local rendering"
   ],
   "effects": ["local-read", "local-write"],
   "bounds": {
     "enforced": [
-      "At most 300 shots and 20 minutes of declared timeline",
-      "At most 120 seconds per shot and 60 frames per second",
-      "Even output dimensions with at most 3840 pixels per side and at most 3840x2160 total pixels",
-      "Each local input at most 2 GiB and all local inputs together at most 10 GiB",
-      "Manifest inputs must resolve inside the manifest directory",
-      "Existing output is not replaced unless --force is explicit",
-      "Audio duration and trimmed video-source durations are probed before rendering"
+      "Local renderer: at most 300 shots and 20 minutes of declared timeline",
+      "Local renderer: at most 120 seconds per shot and 60 frames per second",
+      "Local renderer: even output dimensions, at most 3840 pixels per side, and at most 3840x2160 total pixels",
+      "Local renderer: each local input at most 2 GiB and all local inputs together at most 10 GiB",
+      "Local renderer: manifest inputs must resolve inside the manifest directory",
+      "Local renderer: existing output is not replaced unless --force is explicit",
+      "Local renderer: audio duration and trimmed video-source durations are probed before rendering"
     ],
     "operator": [
-      "Keep paid generation, remote retrieval, account writes, and publishing inside the user's authorized task scope",
+      "Do not claim Conjure mode unless the current host actually exposes enough generation capability to produce moving video and required audio",
+      "Keep provider inference spend, remote retrieval, account writes, and publishing inside the user's authorized task scope",
       "Review generated or retrieved media rights, likenesses, and platform requirements before distribution",
       "Watch the complete export before making an artistic-quality or audience-playback claim"
     ]
   },
   "stop_when": [
-    "The requested MP4 is rendered and FFprobe verification succeeds",
-    "A required local asset, FFmpeg runtime, or compatible audio/timeline duration is absent",
+    "The requested playable music video is produced and the available verification/review is complete",
+    "A required video-generation, audio, local asset, FFmpeg runtime, or presentation capability is absent",
     "Another attempt would repeat a failed generation or render route without a concrete change"
   ],
   "evidence": ["references/evidence.md", "references/field-notes.md"]
