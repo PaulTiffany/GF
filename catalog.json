@@ -12,6 +12,10 @@
     {
       "package": "skills/tool-dashboard",
       "checks": ["skills/tool-dashboard/tests/core.test.mjs", "skills/tool-dashboard/tests/mcp.test.mjs", "skills/tool-dashboard/tests/browser.test.mjs"]
+    },
+    {
+      "package": "skills/make-music-video",
+      "checks": ["tests/test_music_video.py"]
     }
   ]
 }
