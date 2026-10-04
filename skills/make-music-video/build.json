@@ -22,7 +22,10 @@
     "JSON media facts including duration, dimensions, byte lengths, and SHA-256 values",
     "An explicit delivery observation distinguishing file creation from inline-player success"
   ],
-  "effects": ["local-read", "local-write"],
+  "effects": [
+    "local-read",
+    "local-write"
+  ],
   "bounds": {
     "enforced": [
       "Local renderer: at most 300 shots and 20 minutes of declared timeline",
@@ -36,6 +39,8 @@
     "operator": [
       "Prefer reusable templates, asset packs, scene archetypes, and a limited module palette over inventing every shot from scratch",
       "Prefer one high-value visual-generation atlas or pack over repeated isolated generations when continuity matters",
+      "Before image generation for a production asset, write a visual-out brief with artifact role, downstream use, continuity locks, forbidden pixels, and acceptance checks",
+      "Reject a generated visual that is the wrong artifact class even if it is aesthetically strong",
       "Do not require paid text-to-video access when still generation plus deterministic motion/compositing can satisfy the request",
       "Keep provider inference spend, remote retrieval, account writes, and publishing inside the user's authorized task scope",
       "Verify rights and task authority before using stock or third-party media",
@@ -48,5 +53,11 @@
     "A genuinely required audio, visual-source, local-runtime, or requested delivery capability is absent",
     "Another attempt would repeat a failed generation or render route without a concrete change"
   ],
-  "evidence": ["references/evidence.md", "references/visual-grammar.md", "references/asset-packs.md", "references/field-notes.md"]
+  "evidence": [
+    "references/evidence.md",
+    "references/visual-grammar.md",
+    "references/asset-packs.md",
+    "references/visual-out-contract.md",
+    "references/field-notes.md"
+  ]
 }
