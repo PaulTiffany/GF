@@ -51,6 +51,10 @@ filenames.
 - model throttling or unavailable high-tier inference hurts less;
 - the agent reasons in terms of characters and actions rather than raw pixels.
 
+## Script the visual-out call first
+
+Before requesting any atlas, read `visual-out-contract.md` and write a visual-out brief. The brief must declare the artifact role, downstream archetype, layout, continuity locks, forbidden pixels, and acceptance checks. Do not spend image inference until the production need is explicit.
+
 ## Sprite-atlas prompt rule
 
 When requesting a sprite/pose atlas, explicitly ask for:
@@ -61,6 +65,8 @@ When requesting a sprite/pose atlas, explicitly ask for:
 - consistent scale and camera angle unless variation is intentional;
 - a finite named pose list;
 - no text labels inside the image unless labels are genuinely useful.
+
+After generation, inspect the output against the visual-out brief. Reject attractive but wrong artifact classes such as storyboard posters, contact sheets with baked captions/UI, or atlases whose cells cannot be cleanly cropped.
 
 A generated atlas is an upstream source artifact. The final compositor should
 consume extracted/cropped sprites or rendered archetype clips rather than become
