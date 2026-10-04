@@ -73,7 +73,7 @@ separate delivery claim and must be observed rather than assumed.
 ## Start with the visual grammar
 
 Do not invent every shot independently. Read `references/visual-grammar.md`,
-`references/asset-packs.md`, `references/visual-out-contract.md`, `templates/catalog.json`, and
+`references/asset-packs.md`, `references/scene-graph.md`, `references/visual-out-contract.md`, `templates/catalog.json`, and
 `archetypes/catalog.json`, then choose:
 
 1. **one video template** for song-level attention and section roles;
@@ -111,17 +111,16 @@ Inspect each generated visual against its brief before using it. Reject/regenera
 
 ## Use asset packs, not one-shot images
 
-When continuity matters, a visual-generation call should often produce a reusable
-atlas rather than one finished frame.
+When continuity matters, a visual-generation call should often produce a reusable asset pack rather than one finished frame. For recurring actors, default to the proven **one-subject, four-pose, 2×2 sheet** pattern.
 
-One generated output can intentionally contain:
+Keep scene roles separate. Prefer separate calls/packs for:
 
-- several named character poses,
-- expression variants,
-- recurring props,
-- foreground/effect mattes,
-- transparent-friendly cutouts,
-- background plates.
+- one actor's four named poses;
+- another actor's four named poses;
+- props/sets such as a car or diner booth;
+- occluders such as dashboard/glass/table edges;
+- foreground/effect mattes;
+- environment plates.
 
 Treat these as persistent objects. Give poses semantic names/tags so later
 reasoning can ask for `driving + romantic` or `bridge + intimate` rather than
@@ -135,10 +134,7 @@ spend inference once on a coherent pack, then reuse it mechanically.
 
 An archetype is a reusable mini-directing recipe, not a finished shot.
 
-For example, `driving-loop` combines a persistent vehicle/character sprite pack
-with a repeatable moving road plate. Background motion, foreground blur, tiny
-vehicle oscillation, passing light, rain, crop changes, and pose swaps can create
-many distinct driving shots from the same generated assets.
+For example, `driving-loop` combines a moving road/environment plate, a separate car set/prop, one four-pose driver sheet, one four-pose passenger sheet, front-of-actor dashboard/glass occluders, plus optional foreground blur, rain and passing light. The bears are actors **inside** the car scene; they are not part of the car asset.
 
 Likewise, `slow-dance-loop`, `window-rain`, and `lyric-cloud` capture common
 visual situations whose variation can be parameterized instead of re-invented.
@@ -245,7 +241,7 @@ returns byte lengths and SHA-256 values for both outputs.
 ## Typography, Manim, archetypes, procedural fields, and stock
 
 These are upstream shot generators. Keep the final renderer provider-neutral:
-render a sprite/archetype composition, Manim lyric cloud, procedural field, or
+render a layered scene-graph/archetype composition, Manim lyric cloud, procedural field, or
 authorized stock treatment to a normal clip, then list that clip as an ordinary
 `video` shot in the project manifest.
 
@@ -286,5 +282,5 @@ is complete, when a genuinely required capability is absent, or when another
 attempt would repeat a failed route without a concrete change.
 
 See `references/evidence.md`, `references/visual-grammar.md`,
-`references/asset-packs.md`, `references/visual-out-contract.md`, and `references/field-notes.md`. Retain the
+`references/asset-packs.md`, `references/scene-graph.md`, `references/visual-out-contract.md`, and `references/field-notes.md`. Retain the
 bundled MIT `LICENSE` when copying the skill independently.
