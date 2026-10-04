@@ -1,0 +1,38 @@
+{
+  "schema": 1,
+  "id": "standing-room",
+  "character_free": true,
+  "required_assets": [
+    {"id": "room_back", "role": "environment", "z": 10}
+  ],
+  "optional_assets": [
+    {"id": "curtain_front", "role": "occluder", "z": 40},
+    {"id": "rain_window", "role": "weather", "z": 50},
+    {"id": "lamp_glow", "role": "lighting", "z": 60}
+  ],
+  "actor_slots": [
+    {
+      "id": "actor_left",
+      "accepts": ["standing", "standing_close", "embrace"],
+      "anchor": {"x": 0.43, "y": 0.69},
+      "scale": 0.42,
+      "facing": "right_three_quarter",
+      "z": 30,
+      "occluded_by": []
+    },
+    {
+      "id": "actor_right",
+      "accepts": ["standing", "standing_close", "embrace"],
+      "anchor": {"x": 0.57, "y": 0.69},
+      "scale": 0.39,
+      "facing": "left_three_quarter",
+      "z": 31,
+      "occluded_by": []
+    }
+  ],
+  "motion_defaults": {
+    "environment": "hold",
+    "actors": "hold_pose",
+    "camera": "slow_push_or_pan"
+  }
+}
