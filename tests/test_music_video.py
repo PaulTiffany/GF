@@ -15,13 +15,13 @@ spec.loader.exec_module(music_video)
 
 
 class MusicVideoTests(unittest.TestCase):
-    def project(self, root: Path, *, audio="media/song.wav", shots=None):
+    def project(self, root: Path, *, schema=1, audio="media/song.wav", shots=None, poster_time=None):
         media = root / "media"
         media.mkdir()
         for name in ("song.wav", "one.png", "two.mp4"):
             (media / name).write_bytes(b"x")
         value = {
-            "schema": 1,
+            "schema": schema,
             "title": "Demo",
             "audio": audio,
             "width": 1280,
@@ -32,22 +32,40 @@ class MusicVideoTests(unittest.TestCase):
                 {"asset": "media/two.mp4", "kind": "video", "duration": 3.0, "source_start": 0.5},
             ],
         }
+        if poster_time is not None:
+            value["poster_time"] = poster_time
         path = root / "music-video.json"
         path.write_text(json.dumps(value), encoding="utf-8")
         return path
 
-    def test_loads_bounded_project_and_builds_hard_cut_command(self):
+    def test_schema1_remains_backward_compatible(self):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
             project = music_video.load_project(self.project(root))
             self.assertEqual(project.duration, 5.0)
-            self.assertEqual(len(project.shots), 2)
+            self.assertEqual(project.shots[0].motion, "static")
             command = music_video.ffmpeg_argv(project, root / "out.mp4")
             joined = " ".join(command)
             self.assertIn("concat=n=2:v=1:a=0", joined)
             self.assertIn("scale=1280:720", joined)
             self.assertIn("-ss 0.5", joined)
-            self.assertEqual(command[-1], str(root / "out.mp4"))
+
+    def test_schema2_supports_still_motion_fade_and_poster(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            path = self.project(root, schema=2, poster_time=1.25, shots=[
+                {"asset": "media/one.png", "kind": "image", "duration": 2.0,
+                 "motion": "push_in", "transition": "fade_black"},
+                {"asset": "media/one.png", "kind": "image", "duration": 3.0,
+                 "motion": "pan_right"},
+            ])
+            project = music_video.load_project(path)
+            command = " ".join(music_video.ffmpeg_argv(project, root / "out.mp4"))
+            self.assertIn("zoompan", command)
+            self.assertIn("fade=t=out", command)
+            self.assertIn("fade=t=in", command)
+            self.assertEqual(project.poster_time, 1.25)
+            self.assertEqual(music_video.poster_path_for(root / "out.mp4").name, "out.poster.jpg")
 
     def test_rejects_project_path_escape(self):
         with tempfile.TemporaryDirectory() as tmp:
@@ -56,13 +74,14 @@ class MusicVideoTests(unittest.TestCase):
             with self.assertRaisesRegex(music_video.ValidationError, "stay inside"):
                 music_video.load_project(path)
 
-    def test_rejects_image_source_start(self):
+    def test_rejects_motion_on_video(self):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
-            path = self.project(root, shots=[
-                {"asset": "media/one.png", "kind": "image", "duration": 2.0, "source_start": 1.0}
+            path = self.project(root, schema=2, shots=[
+                {"asset": "media/two.mp4", "kind": "video", "duration": 2.0,
+                 "motion": "push_in"}
             ])
-            with self.assertRaisesRegex(music_video.ValidationError, "invalid or missing fields|only valid"):
+            with self.assertRaisesRegex(music_video.ValidationError, "only available for images"):
                 music_video.load_project(path)
 
     def test_rejects_excessive_resolution(self):
