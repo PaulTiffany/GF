@@ -1,0 +1,12 @@
+{
+  "schema": 1,
+  "title": "Replace with the song/video title",
+  "audio": "media/song.wav",
+  "width": 1920,
+  "height": 1080,
+  "fps": 30,
+  "shots": [
+    {"asset": "media/shot-001.png", "kind": "image", "duration": 3.5},
+    {"asset": "media/shot-002.mp4", "kind": "video", "duration": 4.0, "source_start": 0.5}
+  ]
+}
