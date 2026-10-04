@@ -1,124 +1,165 @@
 ---
 name: make-music-video
-description: Conjure a finished music video from a creative brief when the host has connected music/video generation capability; otherwise assemble accepted local media into a verified MP4. Use for Claude Pop-style videos, narrative/performance/lyric/ambient work, or any request whose actual success condition is a playable music video artifact rather than a storyboard or prompt pack.
+description: Make and deliver a playable music video from a supplied or generated song using the strongest media primitives the host actually has: generated stills, local motion/compositing, stock or existing clips, typography/procedural animation, and optional generative video. Use for Claude Pop, narrative, performance, lyric, ambient/sonification, or hybrid work. Success is a playable artifact, not a storyboard or prompt pack.
 ---
 
 # Make a music video
 
-The target is not "write prompts about a music video." The target is **a playable music video**.
+The target is **a playable music video**. Do not confuse asset generation, prompts,
+a storyboard, or a valid MP4 container with completion.
 
-Use the strongest media capabilities the current host actually exposes. A connected generation app may be able to create music, images, motion clips, or an entire multi-shot video inside the conversation. The bundled FFmpeg helper is the deterministic last mile when local source media is available. It is not, by itself, the capability this skill is trying to teach.
+The core portability lesson is that a music video does **not** require a paid
+text-to-video model. A supplied song plus image generation and a local media
+runtime can already produce an authored moving video through reframing,
+compositing, typography, procedural animation, cuts, and encoding. Generated
+video is an optional shot source, not the definition of Conjure mode.
 
 ## Capability gate
 
-Choose one mode before doing creative work.
+Choose the strongest route the current host actually supports.
 
-### Conjure mode
+### Conjure from primitives
 
-Use this mode when the host exposes connected tools that can create the needed media.
+Use when the host can access a finished song (supplied or generated), create or
+obtain enough visual assets, and render moving media locally. Useful primitives
+include:
 
-A successful run starts from a brief such as "make me a strange three-minute Claude Pop video about X" and ends with an actual playable video artifact. Depending on the host, the path may be:
+- still-image generation or existing photographs/artwork,
+- local FFmpeg or equivalent compositing,
+- generated typography/Manim/procedural fields when available,
+- rights-compatible stock clips or user-owned footage,
+- optional generated motion clips.
 
-creative brief -> song/audio generation or supplied song -> visual direction -> generated moving shots or multi-shot video -> review/revision -> final playable video
+A successful run starts from a creative brief and ends with a playable video,
+plus a poster/thumbnail when the local renderer is used.
 
-For ChatGPT specifically, a connected generative-media app can satisfy this gate. At the time this skill was written, the ChatGPT plugin directory exposed Runway with image, video, music/audio, and multi-shot video generation capabilities. Treat that as one adapter, not a dependency or endorsement. Other hosts and future plugins may provide equivalent capabilities.
+### Provider-assisted motion
 
-Do **not** claim Conjure mode merely because image generation, FFmpeg, or prompt writing is available. The host must be able to create enough moving visual media and audio (or receive supplied audio) to land the requested result without making the user manually ferry assets between unrelated tools.
+If connected tools can generate video, use them selectively where continuous
+action or difficult camera motion adds real value. Do not make a paid video
+provider a prerequisite when cheaper primitives can express the idea.
 
 ### Assembly mode
 
-Use this mode when the song and visual assets already exist locally, or after Conjure mode has produced/exported them into the workspace.
-
-The bundled helper validates a shot manifest, renders the accepted assets over one finished audio track, and verifies the MP4.
+Use when song and visual assets already exist. The bundled helper validates a
+bounded project manifest, adds deterministic still motion when requested,
+assembles accepted image/video shots, verifies the MP4, and extracts a poster.
 
 ### Not equipped
 
-If the user asked you to conjure a music video and the current host cannot generate video (or cannot access the requested song/audio), say exactly which capability is missing. Do not substitute a storyboard, manifest, PR, generated still image, or synthetic test clip and call the task complete.
-
-That distinction is the core portability rule of this skill.
+Name the actual missing capability. A supplied song + image generation + local
+FFmpeg is enough for many videos; lack of text-to-video alone is not a blocker.
+Do not silently downgrade a request for a video into a storyboard or prompt pack.
 
 ## Observable success
 
-Keep these outcomes separate:
+Keep these claims separate:
 
-1. **Creative direction exists.**
-2. **Song/audio exists.**
-3. **Moving visual media exists.**
-4. **A complete playable video exists.**
-5. **The final artifact was watched/reviewed.**
-6. **A target platform accepted and plays it**, if publication was requested.
+1. creative direction exists;
+2. song/audio exists;
+3. visual assets exist;
+4. moving visual composition exists;
+5. complete playable video exists;
+6. poster/thumbnail exists when applicable;
+7. the current host actually exposes an inline player, if inline playback is
+   claimed;
+8. target platform accepts/plays it, if publication was requested.
 
-For a request to "make a music video," success is normally #4, not #1–#3.
+For “make me a music video,” success is normally #5. “Plays inline here” is a
+separate delivery claim and must be observed rather than assumed.
 
-## Direct before generating
+## Start with the visual grammar
 
-Choose a visual grammar before spending generation budget. Reuse a user's established visual identity when appropriate.
+Do not invent every shot independently. Read `references/visual-grammar.md` and
+`templates/catalog.json`, then choose:
 
-Useful lanes include:
+1. **one video template** for song-level attention and section roles;
+2. **one style pack** for world/continuity;
+3. **one to three motifs** tied to lyrics or musical events;
+4. **a small module palette** for the actual shots.
 
-- **Claude Pop / internet-native AI pop:** compact high-concept shots, recurring visual jokes or characters, hook recognition, deliberate synthetic aesthetics.
-- **Narrative:** recurring subjects, places, props, and causal progression.
-- **Performance:** singer/band/performance imagery with section-aware cutaways.
-- **Lyric:** typography or lyric imagery as the foreground.
-- **Ambient / sonification:** environment, motion, texture, mapped data, or visual parameters carry musical structure.
-- **Hybrid:** explicitly define what changes at verse, chorus, bridge, and outro.
+Bundled starting templates are:
 
-Write down at least: aspect ratio, one-sentence premise, recurring motifs, continuity rules, and what the chorus/hook should look like.
+- `templates/ballad-narrative.json`
+- `templates/pop-hook.json`
+- `templates/ambient-sonification.json`
+
+`styles/noir-romance.json` is an example style pack, not a default aesthetic.
+Create another small style pack when the project needs a different world.
+
+This separation is how the skill gets variety without high cognitive load.
 
 ## Map the song
 
-Use measured timestamps when the host can analyze or transcribe audio. Otherwise use supplied section times or clearly approximate editorial timing.
+Prefer real timestamps from audio analysis or supplied section boundaries. Keep
+lyrics, sections, tempo feel, and edit tempo distinct: a 70-BPM-feeling ballad
+may be detected at double time, and mechanical beat cutting can ruin the song.
 
 For each section decide:
 
-- average shot length / density,
-- recurring or new motif,
-- how visual energy changes,
-- which lyric or musical events deserve synchronization,
-- where the edit should deliberately hold rather than cut on every beat.
+- section role from the chosen template;
+- average shot length/density;
+- recurring versus new motif;
+- visual energy change;
+- lyric or musical events worth synchronization;
+- whether the edit should deliberately hold across a downbeat.
 
-Pop editing can anticipate a downbeat or hold across it. Mechanical beat matching is not the same as musical phrasing.
+## Build visual interest cheaply first
 
-## Generate moving media
+Use the visual-interest ladder before spending expensive motion inference:
 
-In Conjure mode, **generate motion, not just key art**.
+1. strong still composition;
+2. deterministic reframe: push, pull, pan, crop reveal;
+3. typography or lyric fields;
+4. procedural animation: particles, rain, grain, waveform, vector fields,
+   Lissajous forms, data/sonification mappings;
+5. masks, parallax, compositing, overlays, reflections, split-screen;
+6. rights-compatible stock or user footage for connective texture;
+7. generated motion footage where continuous action matters.
 
-Prefer shot-sized prompts with one legible action and a stable subject description. Reuse references for recurring characters or art direction. Review small batches before spending more inference.
+A still can be a source layer rather than the entire frame. A hero image over
+moving rain, animated light, lyric geometry, or a procedural field is a moving
+composition even though the character art is static.
 
-If the host can generate a whole multi-shot video directly, it may be better to make a coherent first pass there and repair weak sections rather than individually generating every shot.
+## Generate assets with continuity
 
-If the same defect survives two materially different correction strategies, redesign the shot instead of repeatedly sampling the same idea.
+Establish one anchor image/world before generating a large batch. Reuse the
+anchor as a reference for recurring characters, palette, wardrobe, props, and
+locations. Generate in small batches and stop spending inference when the style
+is already coherent enough for the edit.
 
-Keep a lightweight ledger of prompts, source references, selected outputs, durations, and revisions whenever the host exposes those artifacts.
+If generation is throttled or a stronger model is unavailable, degrade the
+asset route rather than abandoning the production: fewer hero images, reuse,
+stock texture, procedural animation, and deterministic motion are valid tools.
 
-## Song generation
+## Deterministic local renderer
 
-If the user supplied a finished song, use it.
-
-If the user asked for the song to be created too and the host exposes music/audio generation, make the song as part of Conjure mode before final video assembly. Preserve the user's stylistic and lyrical intent; do not silently replace their song with generic stock audio.
-
-If the host cannot generate music but can generate video, the task can still proceed when the user supplies audio. Otherwise name the missing capability.
-
-## Deterministic assembly
-
-When local source media exists, keep the manifest beside the media it references. Inputs are relative to that directory and may not escape it.
+Schema 1 remains supported for old hard-cut manifests. Prefer schema 2 for new
+projects.
 
 ```json
 {
-  "schema": 1,
+  "schema": 2,
   "title": "My music video",
   "audio": "media/song.wav",
   "width": 1920,
   "height": 1080,
   "fps": 30,
+  "poster_time": 1.0,
   "shots": [
-    {"asset": "media/shot-001.png", "kind": "image", "duration": 3.5},
-    {"asset": "media/shot-002.mp4", "kind": "video", "duration": 4.0, "source_start": 0.5}
+    {"asset": "media/hero.png", "kind": "image", "duration": 5.0,
+     "motion": "push_in", "transition": "fade_black"},
+    {"asset": "media/road.png", "kind": "image", "duration": 4.0,
+     "motion": "pan_right"},
+    {"asset": "media/stock.mp4", "kind": "video", "duration": 3.0,
+     "source_start": 2.0}
   ]
 }
 ```
 
-The v1 local renderer uses hard cuts. Stills are held for their declared duration. Video clips may start at `source_start` and are trimmed to `duration`. Sources are scaled to cover and center-cropped.
+Image `motion` may be `static`, `push_in`, `pull_out`, `pan_left`, or
+`pan_right`. `transition` may be `cut` or `fade_black`. Video shots preserve
+native motion and may use `source_start`.
 
 Inspect the plan:
 
@@ -127,46 +168,61 @@ python scripts/music_video.py plan /project/music-video.json \
   --output /project/out/music-video.mp4
 ```
 
-Render and verify:
+Render, verify, and extract the poster:
 
 ```bash
 python scripts/music_video.py render /project/music-video.json \
   --output /project/out/music-video.mp4
 ```
 
-Render mode checks FFmpeg/FFprobe, song duration, trimmed video-source duration, overwrite intent, output audio/video streams, dimensions, and final duration; it returns byte length and SHA-256.
+The poster is written beside the MP4 as `music-video.poster.jpg`. Render mode
+checks FFmpeg/FFprobe, song duration, trimmed video-source duration, overwrite
+intent, output streams, dimensions, final duration, and poster creation; it
+returns byte lengths and SHA-256 values for both outputs.
 
-## Zero-cost mechanical proof
+## Typography, Manim, procedural fields, and stock
 
-A zero-cost test exists only to prove the local assembly half:
+These are upstream shot generators. Keep the final renderer provider-neutral:
+render a Manim lyric cloud or procedural field to a normal clip, download or
+prepare an authorized stock clip, then list that clip as an ordinary `video`
+shot in the project manifest.
 
-```bash
-python examples/make_demo.py /tmp/gf-music-video-demo
-python scripts/music_video.py render \
-  /tmp/gf-music-video-demo/music-video.json \
-  --output /tmp/gf-music-video-demo/music-video.mp4
-```
-
-That synthetic clip is **not evidence that Conjure mode is equipped**. It proves only that local assets can be assembled and verified.
+This keeps the compositor simple while letting future hosts add new visual tools
+without changing the project contract.
 
 ## Review
 
-Watch the complete artifact after generation/assembly. Check the opening, section transitions, strongest hook, text, continuity, lip/action artifacts when relevant, and the final frame.
+Watch the artifact, not just the logs. Check the first 10 seconds, every section
+transition, strongest hook, instrumental/solo treatment, text legibility,
+continuity, final image, and audio integrity. Sampled frame inspection is useful
+but does not replace watching the full video when the host can do so.
 
-A codec-valid file can still be a bad video.
+If the result feels like a slideshow, do not solve that only by generating more
+stills. Change the visual grammar: add fields, text, overlays, stock motion,
+masking, or abstraction.
 
 ## Present or publish
 
-For an in-chat request, present the playable result using the host's media surface when available. The user should not have to visit the repository to infer that a video exists.
+For chat delivery, attach/present the MP4 through the host-native media surface
+when available and surface the poster/thumbnail as well. A sandbox/download link
+is useful fallback delivery but is not evidence that the host rendered an inline
+player. If inline playback fails, record that as a delivery-layer failure rather
+than a render failure.
 
-If publication was requested, use the chosen platform/account under the authority already present in the task and distinguish local generation from successful platform playback.
+If publication was requested, use only accounts/platforms already authorized in
+the task and distinguish local render success from platform playback success.
 
 ## Bounds and stopping conditions
 
-The local helper enforces at most 300 shots, 20 minutes, 120 seconds per shot, 60 fps, 4K-class pixel count, 2 GiB per input, 10 GiB total input, and project-directory confinement.
+The local helper enforces at most 300 shots, 20 minutes, 120 seconds per shot,
+60 fps, 4K-class pixel count, 2 GiB per input, 10 GiB total input, and project-
+directory confinement. Existing output/poster files are not replaced unless
+`--force` is explicit.
 
-Generation providers have their own costs, limits, and policies; inspect those before invoking them.
+Stop when the requested playable artifact is produced and the available review
+is complete, when a genuinely required capability is absent, or when another
+attempt would repeat a failed route without a concrete change.
 
-Stop when the requested playable video is produced and reviewed, when a required generation/audio/runtime capability is absent, or when another attempt would repeat a failed route without a concrete change.
-
-See `references/evidence.md` for tested claims and `references/field-notes.md` for related public workflow patterns. Retain the bundled MIT `LICENSE` when copying the skill independently.
+See `references/evidence.md`, `references/visual-grammar.md`, and
+`references/field-notes.md`. Retain the bundled MIT `LICENSE` when copying the
+skill independently.
