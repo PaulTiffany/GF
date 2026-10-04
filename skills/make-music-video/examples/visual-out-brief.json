@@ -1,42 +1,45 @@
 {
   "schema": 1,
-  "role": "sprite_atlas",
-  "downstream_use": ["driving-loop", "slow-dance-loop"],
+  "role": "actor_pose_sheet",
+  "downstream_use": [
+    "driving-loop"
+  ],
   "subject_lock": {
-    "subject": "the same recurring romantic teddy-bear couple",
+    "subject": "one recurring teddy-bear actor only",
     "continuity": [
-      "male bear remains larger and wears the same black leather jacket",
-      "female bear remains smaller and wears the same black bow and black dress",
-      "fur colors and facial design remain constant"
+      "same fur color, face, body proportions and wardrobe in all four cells",
+      "do not include the second bear",
+      "do not include the car or environment"
     ]
   },
   "layout": {
     "type": "grid",
-    "columns": 4,
+    "columns": 2,
     "rows": 2,
     "one_pose_per_cell": true,
     "cell_margin": "generous"
   },
   "camera": {
-    "framing": "full body or waist-up as appropriate",
+    "framing": "waist-up or seated-compatible",
     "angle": "front or slight three-quarter",
-    "scale": "consistent across cells"
+    "scale": "consistent across all four cells"
   },
   "background": {
-    "type": "flat",
-    "purpose": "easy segmentation"
+    "type": "flat_keyable_or_true_alpha",
+    "purpose": "clean actor extraction"
   },
   "poses": [
     "driving_forward",
-    "driving_leaning_close",
-    "looking_at_partner",
-    "phone_glance",
-    "slow_dance_left",
-    "slow_dance_right",
-    "forehead_touch",
-    "resting_together"
+    "look_at_partner",
+    "lean_close",
+    "phone_glance"
   ],
   "forbid": [
+    "second character",
+    "car",
+    "dashboard",
+    "road",
+    "scenery",
     "text",
     "labels",
     "captions",
@@ -45,13 +48,16 @@
     "UI chrome",
     "play buttons",
     "watermarks",
+    "fake checkerboard transparency",
     "overlapping cells",
     "duplicate poses"
   ],
   "acceptance": [
-    "all eight requested poses are present",
-    "subjects remain recognizably identical across cells",
-    "every pose can be cropped without touching another cell",
+    "exactly one actor appears in every cell",
+    "all four requested poses are present",
+    "actor identity and wardrobe are stable",
+    "every pose can be cropped independently",
+    "background is actually removable/keyable",
     "no forbidden artifact is visible"
   ]
 }
