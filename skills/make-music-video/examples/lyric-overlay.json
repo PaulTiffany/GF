@@ -1,0 +1,35 @@
+{
+  "schema": 1,
+  "id": "sugar-bear-chorus-overlay",
+  "duration": 12.0,
+  "canvas": {"width": 1920, "height": 1080, "fps": 30},
+  "events": [
+    {
+      "start": 0.5,
+      "end": 3.4,
+      "text": "Yvonne",
+      "behavior": "drift_up",
+      "anchor": {"x": 0.50, "y": 0.34},
+      "scale": 1.35,
+      "rotation_degrees": 0
+    },
+    {
+      "start": 3.0,
+      "end": 6.8,
+      "text": "come a little closer",
+      "behavior": "fade_hold",
+      "anchor": {"x": 0.52, "y": 0.42},
+      "scale": 0.78,
+      "rotation_degrees": 0
+    },
+    {
+      "start": 6.2,
+      "end": 11.5,
+      "text": "TWO SUGAR BEARS",
+      "behavior": "pulse",
+      "anchor": {"x": 0.50, "y": 0.72},
+      "scale": 1.10,
+      "rotation_degrees": 0
+    }
+  ]
+}
