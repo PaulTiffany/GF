@@ -6,6 +6,18 @@ does not own character placement, scene composition, or the final edit.
 Render the actors/set first, render Manim graphics separately on a transparent
 background, then composite the graphics above the compiled scene.
 
+## Consume the lyric map
+
+When GPT authored the song, Manim should consume events derived from the
+structured lyric map rather than re-parsing raw lyrics or transcribing audio.
+
+The lyric map can preserve recurring motif identity across the entire song, so a
+word such as `home`, `1:11`, or `Sugar Bear` can occupy a persistent visual
+or spatial role even when it appears in multiple sections.
+
+Overlay/world manifests are projections of that map, not competing sources of
+truth. See `lyric-map.md`.
+
 ## Why a manifest instead of bespoke code
 
 Future GPT should select from a small motion vocabulary rather than write a new
