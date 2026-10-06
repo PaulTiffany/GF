@@ -73,7 +73,7 @@ separate delivery claim and must be observed rather than assumed.
 ## Start with the visual grammar
 
 Do not invent every shot independently. Read `references/visual-grammar.md`,
-`references/asset-packs.md`, `references/scene-graph.md`, `references/pose-types.md`, `references/pose-families.md`, `references/manim-lyrics.md`, `references/visual-out-contract.md`, `templates/catalog.json`, `scenes/catalog.json`, and `archetypes/catalog.json`, then choose:
+`references/asset-packs.md`, `references/scene-graph.md`, `references/pose-types.md`, `references/pose-families.md`, `references/lyric-map.md`, `references/manim-lyrics.md`, `references/visual-out-contract.md`, `templates/catalog.json`, `scenes/catalog.json`, and `archetypes/catalog.json`, then choose:
 
 1. **one video template** for song-level attention and section roles;
 2. **one style pack** for world/continuity;
@@ -227,6 +227,28 @@ editable; they are never baked into actor sheets or scene/set generation.
 Use this sparingly. The goal is moving typography as part of the visual world,
 not default karaoke subtitles.
 
+## Preserve lyric structure when GPT authors the song
+
+If GPT authored the lyrics, immediately preserve a structured lyric map before
+sending the text to Suno or another music generator. Do not wait for audio and
+then transcribe the words GPT already knows.
+
+The lyric map should retain section/line ids, repeated-section relationships,
+motif tags, vocal-mode hints, pauses/instrumentals, and timing state. It may begin
+with no timestamps at all.
+
+Timing progresses from `authored` → `estimated` → `aligned`. Later audio
+alignment corrects timing while preserving the authored semantic structure.
+
+Treat caption formats as exports from this richer map:
+
+- LRC/SRT/VTT/ASS for captions;
+- Manim overlay/world events for kinetic/spatial lyrics;
+- actor mouth/gaze state planning;
+- section-to-archetype mapping.
+
+See `references/lyric-map.md`.
+
 ## Map the song
 
 Prefer real timestamps from audio analysis or supplied section boundaries. Keep
@@ -367,5 +389,5 @@ is complete, when a genuinely required capability is absent, or when another
 attempt would repeat a failed route without a concrete change.
 
 See `references/evidence.md`, `references/visual-grammar.md`,
-`references/asset-packs.md`, `references/scene-graph.md`, `references/pose-types.md`, `references/pose-families.md`, `references/manim-lyrics.md`, `references/visual-out-contract.md`, and `references/field-notes.md`. Retain the
+`references/asset-packs.md`, `references/scene-graph.md`, `references/pose-types.md`, `references/pose-families.md`, `references/lyric-map.md`, `references/manim-lyrics.md`, `references/visual-out-contract.md`, and `references/field-notes.md`. Retain the
 bundled MIT `LICENSE` when copying the skill independently.
