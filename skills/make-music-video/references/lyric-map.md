@@ -29,7 +29,8 @@ A lyric map can move through three increasingly precise states:
 1. **authored** — ordered sections/lines, no real audio timing yet;
 2. **estimated** — rough phrase timings derived from expected section lengths or
    a first-pass song map;
-3. **aligned** — phrase/word timings corrected against the rendered audio.
+3. **performed** — acoustic evidence records what was actually sung, including repeats, omissions, or altered words;
+4. **aligned** — canonical/performed text and phrase/word timings reconciled against the rendered audio.
 
 Do not discard earlier semantic structure when alignment occurs.
 
@@ -80,11 +81,15 @@ lyric-map.authored.json
   ↓
 Suno render
   ↓
-rough song-section map
+rough song-section / vocal-region map
   ↓
 lyric-map.estimated.json
   ↓
-forced alignment / manual correction
+performed-word / phrase evidence when available
+  ↓
+lyric-map.performed.json
+  ↓
+canonical reconciliation + alignment
   ↓
 lyric-map.aligned.json
   ↓
@@ -126,12 +131,22 @@ manifests.
 
 ## Alignment hierarchy
 
-Prefer:
+Prefer the cheapest adequate evidence already available in the host:
 
 1. exact user/provided timings;
 2. timings preserved from the generation system, if available;
-3. alignment against the known authored lyrics;
-4. transcription only when the original lyrics are unavailable.
+3. host-native audio analysis for vocal regions, pauses, section/phrase
+   boundaries, beats, and onsets;
+4. canonical-text reconciliation against those acoustic regions;
+5. already-available ASR/CTC/forced alignment to upgrade line or word timing;
+6. a new transcription/alignment dependency only when the requested precision
+   requires it.
 
-If GPT authored the lyrics, transcription should be the last resort, not the
-first step.
+If GPT authored the lyrics, do not throw away that lexical/semantic structure.
+But also do not assume Suno or another singer performed the canonical text
+exactly. Preserve a **performed** layer when the audio repeats, omits, stretches,
+or changes words.
+
+Canonical text supplies intended wording and structure; the rendered audio is
+authoritative for performed timing. Never manufacture proportional timestamps
+as a substitute for acoustic evidence when line timing matters.
