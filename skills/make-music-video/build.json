@@ -51,7 +51,9 @@
       "Route each refinement to the preferred helper/toolset in references/refinement-router.md instead of asking the model to remember solved mechanics",
       "Escalate from defaults to parameter changes, deterministic helpers, object-local regeneration, custom mechanics, then expensive generated motion",
       "Prefer adequate package helpers and capabilities already present in the host before introducing a new dependency, model, provider, or service",
-      "For lyric timing, use acoustic evidence from available local audio tools before ASR escalation; preserve authored, performed, and aligned lyric states instead of inventing proportional timestamps",
+      "For timed lyric captions, obtain lexical acoustic evidence from auto-caption/ASR or forced alignment before canonical reconciliation; section/energy analysis alone is insufficient",
+      "Treat canonical lyrics as the repair/semantic source and timestamped ASR/alignment as the performance-timing observation; preserve repeats, omissions, insertions, and raw ASR evidence",
+      "If line/word lyric timing is requested and no suitable lexical aligner is present, acquiring one is a justified escalation despite the host-native-first preference",
       "Use scripts/pose_sheet.py for fixed-grid actor extraction and scripts/scene_contract.py for pose/scene compatibility instead of visual guessing",
       "Prefer reusable templates, asset packs, scene archetypes, and a limited module palette over inventing every shot from scratch",
       "Prefer one high-value visual-generation atlas or pack over repeated isolated generations when continuity matters",
@@ -77,6 +79,7 @@
   "evidence": [
     "references/evidence.md",
     "references/lyric-map.md",
+    "references/lyric-sync.md",
     "references/refinement-router.md",
     "references/visual-grammar.md",
     "references/asset-packs.md",
