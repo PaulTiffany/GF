@@ -62,11 +62,15 @@ and prefer an adequate capability that is already available. Existing package
 helpers and local tools reduce setup, provider state, authentication, fallback
 logic, and future-model cognitive load.
 
-For example, lyric timing should first use whatever local audio mechanics are
-already present to establish duration, vocal activity, pauses, and phrase
-boundaries. Reconcile those acoustic events with the canonical lyric map.
-Escalate to ASR/CTC/forced alignment only when line/word precision requires it;
-do not install a transcription stack merely because one exists.
+Host-native-first is a preference, not permission to use the wrong observation
+channel. For musical structure, local audio tools may be enough. For **timed
+lyrics**, lexical acoustic evidence is required: auto-caption/ASR the rendered
+performance, then reconcile that timestamped transcript against the canonical
+lyric map. If no suitable ASR/aligner is already present, acquiring one is a
+justified escalation when line/word timing is requested.
+
+Do not substitute energy minima, pauses, or proportional timing for hearing which
+words were sung. See `references/lyric-sync.md`.
 
 ### Conjure from primitives
 
@@ -122,7 +126,7 @@ separate delivery claim and must be observed rather than assumed.
 ## Start with the visual grammar
 
 Do not invent every shot independently. Read `references/visual-grammar.md`,
-`references/refinement-router.md`, `references/visual-grammar.md`, `references/asset-packs.md`, `references/scene-graph.md`, `references/pose-types.md`, `references/pose-families.md`, `references/lyric-map.md`, `references/manim-lyrics.md`, `references/visual-out-contract.md`, `templates/catalog.json`, `scenes/catalog.json`, and `archetypes/catalog.json`, then choose:
+`references/refinement-router.md`, `references/visual-grammar.md`, `references/asset-packs.md`, `references/scene-graph.md`, `references/pose-types.md`, `references/pose-families.md`, `references/lyric-map.md`, `references/lyric-sync.md`, `references/manim-lyrics.md`, `references/visual-out-contract.md`, `templates/catalog.json`, `scenes/catalog.json`, and `archetypes/catalog.json`, then choose:
 
 1. **one video template** for song-level attention and section roles;
 2. **one style pack** for world/continuity;
@@ -297,6 +301,26 @@ Treat caption formats as exports from this richer map:
 
 See `references/lyric-map.md`.
 
+## Synchronize performed lyrics
+
+When captions, kinetic lyrics, or lyric-triggered actor states are requested,
+use the actual performance as the timing source.
+
+Default path:
+
+1. auto-caption/ASR the rendered audio and preserve its raw timestamped output;
+2. sequence-align that noisy performed transcript with the canonical lyric map;
+3. repair names, wording, punctuation, token splits/merges, and obvious ASR
+   errors while retaining acoustic spans;
+4. preserve singer repeats, omissions, and inserted phrases as performed events;
+5. export the reconciled map to SRT/ASS/Manim/actor-state timing.
+
+Use `section_aligned`, `line_aligned`, and `word_aligned` as explicit
+fidelity claims. Ordinary beat/onset/energy analysis may support
+`section_aligned`; it cannot certify lyric lines.
+
+See `references/lyric-sync.md`.
+
 ## Map the song
 
 Prefer real timestamps from audio analysis or supplied section boundaries. Keep
@@ -437,5 +461,5 @@ is complete, when a genuinely required capability is absent, or when another
 attempt would repeat a failed route without a concrete change.
 
 See `references/evidence.md`, `references/refinement-router.md`, `references/visual-grammar.md`,
-`references/asset-packs.md`, `references/scene-graph.md`, `references/pose-types.md`, `references/pose-families.md`, `references/lyric-map.md`, `references/manim-lyrics.md`, `references/visual-out-contract.md`, and `references/field-notes.md`. Retain the
+`references/asset-packs.md`, `references/scene-graph.md`, `references/pose-types.md`, `references/pose-families.md`, `references/lyric-map.md`, `references/lyric-sync.md`, `references/manim-lyrics.md`, `references/visual-out-contract.md`, and `references/field-notes.md`. Retain the
 bundled MIT `LICENSE` when copying the skill independently.
