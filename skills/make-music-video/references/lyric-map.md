@@ -22,7 +22,7 @@ then that information should survive into the music-video pipeline.
 
 Later audio alignment should refine timing, not rediscover structure.
 
-## Three timing states
+## Timing and performance states
 
 A lyric map can move through three increasingly precise states:
 
@@ -131,22 +131,37 @@ manifests.
 
 ## Alignment hierarchy
 
-Prefer the cheapest adequate evidence already available in the host:
+Choose the required fidelity first:
 
-1. exact user/provided timings;
-2. timings preserved from the generation system, if available;
-3. host-native audio analysis for vocal regions, pauses, section/phrase
-   boundaries, beats, and onsets;
-4. canonical-text reconciliation against those acoustic regions;
-5. already-available ASR/CTC/forced alignment to upgrade line or word timing;
-6. a new transcription/alignment dependency only when the requested precision
-   requires it.
+- **section_aligned** — scene/edit structure only; beats, onsets, pauses, energy,
+  and section analysis are sufficient;
+- **line_aligned** — timed lyric lines; requires lexical acoustic evidence from
+  auto-caption/ASR, forced alignment, or manual timing;
+- **word_aligned** — kinetic typography/karaoke precision; requires timestamped
+  word/phoneme evidence.
 
-If GPT authored the lyrics, do not throw away that lexical/semantic structure.
-But also do not assume Suno or another singer performed the canonical text
-exactly. Preserve a **performed** layer when the audio repeats, omits, stretches,
-or changes words.
+When timed lyrics are required and canonical lyrics are available, prefer:
+
+1. exact user/provided or generator-preserved lyric timings;
+2. **auto-caption/ASR the actual rendered performance** to obtain noisy words
+   plus timestamps;
+3. sequence-align that performed transcript against the canonical lyric map;
+4. surgically repair names/wording/punctuation while preserving acoustic timing;
+5. preserve performed repeats, omissions, and insertions rather than forcing the
+   authored text onto unused time;
+6. escalate to CTC/forced alignment when word/phoneme precision is needed.
+
+Ordinary audio analysis remains useful in parallel for song sections, shot cuts,
+beats, pauses, and edit dynamics. It is not lexical evidence and must not be used
+to claim line- or word-level lyric alignment.
+
+If GPT authored the lyrics, retain that lexical/semantic structure, but do not
+assume Suno or another singer performed it exactly. Keep raw ASR evidence,
+canonical text, performed text, timing, confidence, and reconciliation operation
+when practical.
+
+See `references/lyric-sync.md` for the canonical-surgery procedure.
 
 Canonical text supplies intended wording and structure; the rendered audio is
 authoritative for performed timing. Never manufacture proportional timestamps
-as a substitute for acoustic evidence when line timing matters.
+or map lyrics onto energy minima as a substitute for lexical acoustic evidence.
