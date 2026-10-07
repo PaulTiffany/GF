@@ -2,10 +2,18 @@
 
 > Good fight. Small build. Clean execution. Show the result.
 
-GF is an executable build wiki for tool-equipped assistants.
-The first build delivers an existing animated GIF inside a compatible chat.
+GF is an executable build wiki for tool-equipped assistants. Its certified skills
+are designed to **reduce future-model cognitive load**: prefer a small selector
+over open-ended generation, materialize a typed object, then let the assistant
+inspect that object and descend into one mechanic only when refinement is useful.
+
+A good GF build therefore carries forward solved production knowledge instead of
+making the next assistant reconstruct it from prose. The skill points from each
+object/refinement handle to the toolset that performs that mechanic reliably,
+while executable checks and evidence keep capability claims observable.
+
 The teaching style borrows from OSRS rusher build guides: name the requirements,
-teach the sequence, identify the matchup, and show what actually landed.
+teach the shortest sequence, identify the matchup, and show what actually landed.
 
 ## Find a build
 
@@ -14,6 +22,7 @@ python catalog.py list
 python catalog.py show serve-gif
 python catalog.py show check-model
 python catalog.py show tool-dashboard
+python catalog.py show make-music-video
 ```
 
 The catalogue shows each build's requirements, inputs, outputs, effects, bounds,
@@ -154,6 +163,38 @@ general action dispatcher is included.
 two layouts through the official AppBridge in Chromium. Phone registration,
 display and continuation still require the [client probe](skills/tool-dashboard/references/setup.md).
 See the [evidence boundaries](skills/tool-dashboard/references/evidence.md).
+
+## Build 04: make a music video
+
+[make-music-video](skills/make-music-video/SKILL.md) turns a supplied or generated
+song into a playable video using a selector-first production grammar.
+
+The common path intentionally asks the assistant for **semantic choices**, not
+coordinates or media plumbing:
+
+**select → materialize object → refine one mechanic if needed → verify → compose**
+
+Examples of selectable objects include a song template, character-free scene,
+four-pose actor pack, scene archetype, recurring motif, and lyric/Manim treatment.
+Once an object exists, it becomes a handle for deeper work: a diner scene exposes
+typed seated slots; an actor pack exposes gaze/mouth/interaction states; a lyric
+map exposes sections and motifs; a Manim object exposes camera/text geometry.
+The skill points each refinement toward the appropriate deterministic helper or
+specialized tool instead of asking the model to solve the entire video again.
+
+The current build includes deterministic 2×2 actor-sheet slicing, typed
+scene/pose matching, scene-aware actor states, bounded Manim lyric-source
+compilation, authored lyric-map preservation, local timeline rendering,
+poster extraction, media verification, and negative evidence from failed
+composition routes.
+
+A supplied song plus usable visual assets and FFmpeg is sufficient for many
+videos; paid text-to-video is an optional shot source rather than a success gate.
+See the build declaration for requirements and bounds:
+
+```bash
+python catalog.py show make-music-video
+```
 
 ## Optional renderer and GitHub adapter
 
