@@ -50,6 +50,8 @@
       "Preserve all unaffected typed objects while refining one mechanic",
       "Route each refinement to the preferred helper/toolset in references/refinement-router.md instead of asking the model to remember solved mechanics",
       "Escalate from defaults to parameter changes, deterministic helpers, object-local regeneration, custom mechanics, then expensive generated motion",
+      "Prefer adequate package helpers and capabilities already present in the host before introducing a new dependency, model, provider, or service",
+      "For lyric timing, use acoustic evidence from available local audio tools before ASR escalation; preserve authored, performed, and aligned lyric states instead of inventing proportional timestamps",
       "Use scripts/pose_sheet.py for fixed-grid actor extraction and scripts/scene_contract.py for pose/scene compatibility instead of visual guessing",
       "Prefer reusable templates, asset packs, scene archetypes, and a limited module palette over inventing every shot from scratch",
       "Prefer one high-value visual-generation atlas or pack over repeated isolated generations when continuity matters",
