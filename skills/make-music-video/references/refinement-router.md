@@ -7,7 +7,7 @@ Do not reopen the entire music-video problem merely because one object needs wor
 | --- | --- | --- | --- |
 | video template | section emphasis, attention curve, novelty budget | template JSON + editorial reasoning | selected template |
 | style pack | world, palette, continuity, forbidden drift | style JSON + image-generation references | style pack |
-| lyric map | section roles, repeated motifs, vocal intent, landmark importance | authored map first; alignment tool only to add/correct timing | authored/estimated/aligned lyric map |
+| lyric map | section roles, repeated motifs, vocal intent, landmark importance | authored map first; use host-native audio tools for vocal/phrase boundaries, then canonical reconciliation; escalate to ASR/forced alignment only for needed precision | authored/estimated/performed/aligned lyric map |
 | actor pack | body family, gaze, mouth/vocal state, interaction | image generation for fixed 2×2 source; `pose_sheet.py` for mechanical slicing | typed four-pose pack |
 | scene template | narrative situation, desired actor relationship | character-free image/set generation; `scene_contract.py` for slots/compatibility | typed scene |
 | archetype | what changes through time | archetype JSON + deterministic scene compositor | rendered archetype clip |
@@ -51,3 +51,23 @@ Typical order:
 
 The parent workflow should retain all unaffected objects while one object is
 being refined.
+
+## Host-native-first rule
+
+Before adding a dependency, inspect the current host. Prefer already-available
+mechanics that are adequate for the requested fidelity.
+
+For lyric timing, the default escalation is:
+
+1. exact timings supplied by the user/generator;
+2. existing local audio tools (for example FFmpeg/FFprobe, librosa, Demucs,
+   torchaudio) to detect duration, vocal regions, pauses, beats, and phrase
+   boundaries;
+3. reconcile those acoustic regions against the canonical lyric map;
+4. use an already-available ASR/CTC aligner to upgrade line/word timing;
+5. install or call a new transcription/alignment system only when the requested
+   precision requires it.
+
+Do not manufacture proportional timestamps merely because canonical lyrics are
+known. Canonical text supplies lexical structure; the audio supplies performed
+timing.
