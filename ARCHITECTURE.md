@@ -63,6 +63,27 @@ assistants should not need to remember from scratch that Manim is good at
 deterministic spatial typography, FFmpeg at assembly/verification, or a package
 helper at validating a local contract; the skill carries that procedural memory.
 
+### Prefer host-native capability
+
+When several mechanics can satisfy the same refinement, prefer the strongest
+capability already present in the current host before introducing a new model,
+runtime, service, or dependency.
+
+A useful escalation order is:
+
+1. existing package helper;
+2. existing host/runtime library or command-line tool;
+3. already-connected provider/tool;
+4. lightweight new dependency;
+5. new model/service only when the required precision or capability justifies it.
+
+This is a cognitive-load rule as much as a cost rule. Future assistants should
+not spend context reconstructing installation, authentication, provider quirks,
+or fallback logic when an adequate local mechanic already exists.
+
+Record when a higher rung is genuinely required; do not silently promote an
+optional dependency into the skill's default path.
+
 ### Cognitive-load test
 
 During review, ask:
@@ -72,7 +93,7 @@ During review, ask:
 - Can an open-ended prompt become a bounded selector?
 - Can the selection become a typed object that preserves state?
 - Does that object expose a clear next refinement surface?
-- Does the skill point to the best available tool/helper for that refinement?
+- Does the skill point first to the best already-available tool/helper for that refinement?
 - Does later work consume prior structured state rather than infer it again?
 - Are defaults backed by evidence, tests, or explicit operator judgement?
 - Can a custom escape hatch remain available without making it the default path?
