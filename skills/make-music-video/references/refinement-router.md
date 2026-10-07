@@ -7,7 +7,7 @@ Do not reopen the entire music-video problem merely because one object needs wor
 | --- | --- | --- | --- |
 | video template | section emphasis, attention curve, novelty budget | template JSON + editorial reasoning | selected template |
 | style pack | world, palette, continuity, forbidden drift | style JSON + image-generation references | style pack |
-| lyric map | section roles, repeated motifs, vocal intent, landmark importance | authored map first; use host-native audio tools for vocal/phrase boundaries, then canonical reconciliation; escalate to ASR/forced alignment only for needed precision | authored/estimated/performed/aligned lyric map |
+| lyric map | section roles, repeated motifs, vocal intent, landmark importance | authored map first; for timed captions auto-caption/ASR the rendered performance, then sequence-align and surgically reconcile against canon; use non-lexical audio analysis only for sections/edit timing | authored/estimated/performed/aligned lyric map |
 | actor pack | body family, gaze, mouth/vocal state, interaction | image generation for fixed 2×2 source; `pose_sheet.py` for mechanical slicing | typed four-pose pack |
 | scene template | narrative situation, desired actor relationship | character-free image/set generation; `scene_contract.py` for slots/compatibility | typed scene |
 | archetype | what changes through time | archetype JSON + deterministic scene compositor | rendered archetype clip |
@@ -57,17 +57,18 @@ being refined.
 Before adding a dependency, inspect the current host. Prefer already-available
 mechanics that are adequate for the requested fidelity.
 
-For lyric timing, the default escalation is:
+For lyric work, choose the fidelity first:
 
-1. exact timings supplied by the user/generator;
-2. existing local audio tools (for example FFmpeg/FFprobe, librosa, Demucs,
-   torchaudio) to detect duration, vocal regions, pauses, beats, and phrase
-   boundaries;
-3. reconcile those acoustic regions against the canonical lyric map;
-4. use an already-available ASR/CTC aligner to upgrade line/word timing;
-5. install or call a new transcription/alignment system only when the requested
-   precision requires it.
+1. **section/edit timing:** use existing local audio tools such as
+   FFmpeg/FFprobe/librosa/Demucs/torchaudio when available;
+2. **line captions:** auto-caption/ASR the actual performance first, then repair
+   the timestamped transcript against canonical lyrics;
+3. **word/phoneme timing:** use timestamped ASR or CTC/forced alignment;
+4. if the required lexical aligner is absent, installing/calling one is a
+   justified escalation rather than substituting energy/phrase detection.
 
 Do not manufacture proportional timestamps merely because canonical lyrics are
-known. Canonical text supplies lexical structure; the audio supplies performed
-timing.
+known, and do not infer lyric boundaries from energy minima. Canonical lyrics
+supply lexical structure; ASR/alignment supplies lexical acoustic timing.
+
+See `lyric-sync.md` for the surgery contract.
