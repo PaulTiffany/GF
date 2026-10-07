@@ -66,8 +66,10 @@ helper at validating a local contract; the skill carries that procedural memory.
 ### Prefer host-native capability
 
 When several mechanics can satisfy the same refinement, prefer the strongest
-capability already present in the current host before introducing a new model,
-runtime, service, or dependency.
+**adequate** capability already present in the current host before introducing a
+new model, runtime, service, or dependency. Availability never substitutes for
+observability: a cheaper tool that cannot observe the property being certified is
+not an adequate fallback.
 
 A useful escalation order is:
 
