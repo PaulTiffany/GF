@@ -55,6 +55,19 @@ should not be the common path.
 
 Choose the strongest route the current host actually supports.
 
+### Prefer what the host already has
+
+Before adding a model, package, provider, or service, inspect the current host
+and prefer an adequate capability that is already available. Existing package
+helpers and local tools reduce setup, provider state, authentication, fallback
+logic, and future-model cognitive load.
+
+For example, lyric timing should first use whatever local audio mechanics are
+already present to establish duration, vocal activity, pauses, and phrase
+boundaries. Reconcile those acoustic events with the canonical lyric map.
+Escalate to ASR/CTC/forced alignment only when line/word precision requires it;
+do not install a transcription stack merely because one exists.
+
 ### Conjure from primitives
 
 Use when the host can access a finished song (supplied or generated), create or
@@ -273,8 +286,7 @@ The lyric map should retain section/line ids, repeated-section relationships,
 motif tags, vocal-mode hints, pauses/instrumentals, and timing state. It may begin
 with no timestamps at all.
 
-Timing progresses from `authored` → `estimated` → `aligned`. Later audio
-alignment corrects timing while preserving the authored semantic structure.
+Timing progresses from `authored` → `estimated` → `performed` → `aligned` when needed. The performed layer records what the rendered singer actually did; later reconciliation corrects timing/wording while preserving the authored semantic structure.
 
 Treat caption formats as exports from this richer map:
 
