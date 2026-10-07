@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "id": "make-music-video",
-  "summary": "Make and deliver playable music videos from reusable templates, StickerBook-style asset packs, scene archetypes, deterministic motion/compositing, and optional generation providers.",
+  "summary": "Make and deliver playable music videos through selector-first typed objects, targeted refinement, deterministic helpers, reusable scene/actor/lyric grammars, and verified compositing.",
   "skill": "SKILL.md",
   "entrypoint": "scripts/music_video.py",
   "license": "LICENSE",
@@ -14,6 +14,7 @@
   ],
   "inputs": [
     "A creative brief plus a song/audio source",
+    "Semantic selector choices for template, style, scene/archetype, actor family, motif, and lyric treatment; custom mechanics only when the bounded grammar is insufficient",
     "A selected video template and style pack, plus reusable asset packs/archetypes when appropriate",
     "For recurring actors: fixed 2x2 single-actor pose-sheet manifests with four typed poses",
     "For reusable scenes: character-free scene templates whose actor slots declare accepted pose types, normalized anchors, scale, z-order, and occluders",
@@ -45,6 +46,10 @@
       "Local renderer: audio duration and trimmed video-source durations are probed before rendering"
     ],
     "operator": [
+      "Prefer selector → typed object → targeted refinement over reopening the full music-video problem at each step",
+      "Preserve all unaffected typed objects while refining one mechanic",
+      "Route each refinement to the preferred helper/toolset in references/refinement-router.md instead of asking the model to remember solved mechanics",
+      "Escalate from defaults to parameter changes, deterministic helpers, object-local regeneration, custom mechanics, then expensive generated motion",
       "Use scripts/pose_sheet.py for fixed-grid actor extraction and scripts/scene_contract.py for pose/scene compatibility instead of visual guessing",
       "Prefer reusable templates, asset packs, scene archetypes, and a limited module palette over inventing every shot from scratch",
       "Prefer one high-value visual-generation atlas or pack over repeated isolated generations when continuity matters",
@@ -69,6 +74,8 @@
   ],
   "evidence": [
     "references/evidence.md",
+    "references/lyric-map.md",
+    "references/refinement-router.md",
     "references/visual-grammar.md",
     "references/asset-packs.md",
     "references/scene-graph.md",
