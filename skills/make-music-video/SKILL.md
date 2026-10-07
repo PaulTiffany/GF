@@ -15,6 +15,42 @@ assets, scene archetypes, reframing, compositing, typography, procedural
 animation, cuts, and encoding. Generated video is an optional shot source, not
 the definition of Conjure mode.
 
+## Operating model: select → object → refine
+
+Optimize for the next assistant's cognitive load.
+
+Do **not** begin by inventing shots, coordinates, prompts, or animation code. Use
+bounded selectors to materialize typed objects first, then descend into one
+object only when refinement is useful.
+
+Common path:
+
+1. **Select** a video template, style, scene/archetype family, actor family, and
+   lyric treatment from the bundled catalogs/defaults.
+2. **Materialize** those choices as typed objects/manifests.
+3. **Inspect** the concrete object that needs attention; preserve all unaffected
+   objects.
+4. **Refine one mechanic** using that object's semantic handles.
+5. **Route the mechanic** to the helper/toolset that performs it reliably.
+6. **Verify** the refined object or rendered artifact, then return it to the
+   composition.
+
+Examples:
+
+- diner feels stiff → refine actor gaze/mouth state, not the whole video;
+- chorus text feels dull → refine the lyric/Manim object, not the actors;
+- timing is wrong → refine the lyric map/alignment, not image generation;
+- sprite sheet is malformed → reject/regenerate that actor object, do not make
+  Manim or FFmpeg compensate for it.
+
+Read `references/refinement-router.md` after selection when deeper work is
+needed. It maps each object class to its useful refinement surface and preferred
+toolset.
+
+Selectors are defaults, not a prison. A custom mechanic remains available when
+the selected object cannot express the requested result, but custom generation
+should not be the common path.
+
 ## Capability gate
 
 Choose the strongest route the current host actually supports.
@@ -73,7 +109,7 @@ separate delivery claim and must be observed rather than assumed.
 ## Start with the visual grammar
 
 Do not invent every shot independently. Read `references/visual-grammar.md`,
-`references/asset-packs.md`, `references/scene-graph.md`, `references/pose-types.md`, `references/pose-families.md`, `references/lyric-map.md`, `references/manim-lyrics.md`, `references/visual-out-contract.md`, `templates/catalog.json`, `scenes/catalog.json`, and `archetypes/catalog.json`, then choose:
+`references/refinement-router.md`, `references/visual-grammar.md`, `references/asset-packs.md`, `references/scene-graph.md`, `references/pose-types.md`, `references/pose-families.md`, `references/lyric-map.md`, `references/manim-lyrics.md`, `references/visual-out-contract.md`, `templates/catalog.json`, `scenes/catalog.json`, and `archetypes/catalog.json`, then choose:
 
 1. **one video template** for song-level attention and section roles;
 2. **one style pack** for world/continuity;
@@ -388,6 +424,6 @@ Stop when the requested playable artifact is produced and the available review
 is complete, when a genuinely required capability is absent, or when another
 attempt would repeat a failed route without a concrete change.
 
-See `references/evidence.md`, `references/visual-grammar.md`,
+See `references/evidence.md`, `references/refinement-router.md`, `references/visual-grammar.md`,
 `references/asset-packs.md`, `references/scene-graph.md`, `references/pose-types.md`, `references/pose-families.md`, `references/lyric-map.md`, `references/manim-lyrics.md`, `references/visual-out-contract.md`, and `references/field-notes.md`. Retain the
 bundled MIT `LICENSE` when copying the skill independently.
