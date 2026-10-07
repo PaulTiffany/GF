@@ -1,0 +1,39 @@
+{
+  "schema": 1,
+  "id": "bedside",
+  "character_free": true,
+  "required_assets": [
+    {"id": "room_back", "role": "environment", "z": 10},
+    {"id": "bed_back", "role": "set", "z": 20},
+    {"id": "blanket_front", "role": "occluder", "z": 40}
+  ],
+  "optional_assets": [
+    {"id": "window_rain", "role": "weather", "z": 50},
+    {"id": "lamp_glow", "role": "lighting", "z": 60}
+  ],
+  "actor_slots": [
+    {
+      "id": "left",
+      "accepts": ["seated", "reclined", "embrace"],
+      "anchor": {"x": 0.45, "y": 0.60},
+      "scale": 0.37,
+      "facing": "right_three_quarter",
+      "z": 30,
+      "occluded_by": ["blanket_front"]
+    },
+    {
+      "id": "right",
+      "accepts": ["seated", "reclined", "embrace"],
+      "anchor": {"x": 0.57, "y": 0.60},
+      "scale": 0.35,
+      "facing": "left_three_quarter",
+      "z": 31,
+      "occluded_by": ["blanket_front"]
+    }
+  ],
+  "motion_defaults": {
+    "environment": "hold",
+    "actors": "hold_pose",
+    "camera": "slow_push"
+  }
+}

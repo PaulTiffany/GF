@@ -1,0 +1,63 @@
+{
+  "schema": 1,
+  "role": "actor_pose_sheet",
+  "downstream_use": [
+    "driving-loop"
+  ],
+  "subject_lock": {
+    "subject": "one recurring teddy-bear actor only",
+    "continuity": [
+      "same fur color, face, body proportions and wardrobe in all four cells",
+      "do not include the second bear",
+      "do not include the car or environment"
+    ]
+  },
+  "layout": {
+    "type": "grid",
+    "columns": 2,
+    "rows": 2,
+    "one_pose_per_cell": true,
+    "cell_margin": "generous"
+  },
+  "camera": {
+    "framing": "waist-up or seated-compatible",
+    "angle": "front or slight three-quarter",
+    "scale": "consistent across all four cells"
+  },
+  "background": {
+    "type": "flat_keyable_or_true_alpha",
+    "purpose": "clean actor extraction"
+  },
+  "poses": [
+    "driving_forward",
+    "look_at_partner",
+    "lean_close",
+    "phone_glance"
+  ],
+  "forbid": [
+    "second character",
+    "car",
+    "dashboard",
+    "road",
+    "scenery",
+    "text",
+    "labels",
+    "captions",
+    "timestamps",
+    "panel borders",
+    "UI chrome",
+    "play buttons",
+    "watermarks",
+    "fake checkerboard transparency",
+    "overlapping cells",
+    "duplicate poses"
+  ],
+  "acceptance": [
+    "exactly one actor appears in every cell",
+    "all four requested poses are present",
+    "actor identity and wardrobe are stable",
+    "every pose can be cropped independently",
+    "background is actually removable/keyable",
+    "no forbidden artifact is visible"
+  ]
+}

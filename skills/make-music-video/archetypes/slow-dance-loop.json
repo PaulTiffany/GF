@@ -1,0 +1,40 @@
+{
+  "schema": 1,
+  "id": "slow-dance-loop",
+  "scene_template": "../scenes/standing-room.json",
+  "idea": "Place two independent standing/close/embrace-compatible actors into a character-free standing scene and vary pose state sparingly while camera, light, rain/particles and foreground depth create the motion.",
+  "inputs": {
+    "required": [
+      "character_free_scene_kit_for_standing-room",
+      "left_actor_pack_4pose",
+      "right_actor_pack_4pose"
+    ],
+    "optional": [
+      "rain_window",
+      "curtain_front",
+      "lamp_glow",
+      "particles",
+      "manim_overlay"
+    ]
+  },
+  "variation_knobs": [
+    "left_pose",
+    "right_pose",
+    "actor_spacing",
+    "camera_push",
+    "camera_pan",
+    "light_intensity",
+    "overlay_density"
+  ],
+  "good_for": [
+    "chorus",
+    "bridge",
+    "romantic refrain",
+    "slow dance"
+  ],
+  "avoid": [
+    "fused couple sprites when independent actor placement is needed",
+    "large limb animation without dedicated frame assets",
+    "changing character identity between pose sheets"
+  ]
+}

@@ -1,0 +1,32 @@
+{
+  "schema": 1,
+  "id": "performance-stage",
+  "character_free": true,
+  "required_assets": [
+    {"id": "stage_back", "role": "environment", "z": 10},
+    {"id": "stage_floor", "role": "set", "z": 20}
+  ],
+  "optional_assets": [
+    {"id": "mic_stand_front", "role": "occluder", "z": 40},
+    {"id": "stage_haze", "role": "weather", "z": 50},
+    {"id": "spotlight", "role": "lighting", "z": 60},
+    {"id": "audience_bokeh", "role": "foreground", "z": 70}
+  ],
+  "actor_slots": [
+    {
+      "id": "performer",
+      "accepts": ["performance", "standing"],
+      "anchor": {"x": 0.50, "y": 0.68},
+      "scale": 0.43,
+      "facing": "front",
+      "z": 30,
+      "occluded_by": ["mic_stand_front"]
+    }
+  ],
+  "motion_defaults": {
+    "environment": "hold",
+    "actors": "hold_pose",
+    "camera": "push_pan_or_hold",
+    "lighting": "pulse_or_sweep"
+  }
+}

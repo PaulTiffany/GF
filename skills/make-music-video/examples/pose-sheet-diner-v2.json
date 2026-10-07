@@ -1,0 +1,12 @@
+{
+  "schema": 2,
+  "actor_id": "yvonne-bear",
+  "pack_kind": "actor",
+  "source": "media/yvonne-bear-diner-2x2.png",
+  "poses": [
+    {"id": "listen", "type": "seated_table", "gaze": "partner", "mouth": "closed", "interaction": "table"},
+    {"id": "smile_partner", "type": "seated_table", "gaze": "partner", "mouth": "smile", "interaction": "table"},
+    {"id": "sing_soft", "type": "seated_table", "gaze": "partner", "mouth": "soft_open", "interaction": "table"},
+    {"id": "sing_open", "type": "seated_table", "gaze": "forward", "mouth": "singing_open", "interaction": "table"}
+  ]
+}

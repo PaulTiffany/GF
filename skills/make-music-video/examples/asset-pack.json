@@ -1,0 +1,19 @@
+{
+  "schema": 1,
+  "id": "sugar-bears-v1",
+  "type": "sprite-pack",
+  "source": "media/sugar-bears-atlas.png",
+  "subject": "recurring romantic bear couple",
+  "poses": [
+    {"id": "driving_forward", "tags": ["driving", "verse", "neutral"]},
+    {"id": "leaning_close", "tags": ["driving", "romantic", "chorus"]},
+    {"id": "slow_dance_left", "tags": ["dance", "romantic"]},
+    {"id": "slow_dance_right", "tags": ["dance", "romantic"]},
+    {"id": "forehead_touch", "tags": ["intimate", "bridge", "closeup"]}
+  ],
+  "continuity": [
+    "preserve character colors and wardrobe",
+    "preserve relative character scale",
+    "reuse the same pack across archetypes when possible"
+  ]
+}

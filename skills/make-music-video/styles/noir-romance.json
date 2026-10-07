@@ -1,0 +1,15 @@
+{
+  "schema": 1,
+  "id": "noir-romance",
+  "visual_premise": "Late-night romantic Americana with lonely roads, practical light, weather, and intimate recurring subjects.",
+  "palette": ["blue-black", "silver moonlight", "warm amber", "neon pink-red"],
+  "continuity": [
+    "keep recurring subjects recognizable across hero images",
+    "reuse one or two locations and props instead of generating a new world for every line",
+    "favor wet reflections, haze, practical light, and negative space",
+    "let dawn or warmer light function as an earned ending rather than a random palette shift"
+  ],
+  "motif_examples": ["road", "moon", "clock time", "headlights", "motel sign", "hands/paws touching"],
+  "works_with": ["ballad-narrative", "pop-hook"],
+  "avoid": ["unmotivated costume drift", "new characters without lyrical purpose", "generic slideshow pacing"]
+}

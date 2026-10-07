@@ -1,0 +1,48 @@
+{
+  "schema": 1,
+  "id": "standing-romance",
+  "scene_template": "../scenes/standing-room.json",
+  "idea": "Place two standing/close/embrace-compatible actors into a character-free room or stage-like scene; motion comes from slow camera travel, light, weather, foreground depth and deliberate pose changes.",
+  "inputs": {
+    "required": [
+      "character_free_scene_kit_for_standing-room",
+      "left_actor_pack_4pose",
+      "right_actor_pack_4pose"
+    ],
+    "optional": [
+      "rain_window",
+      "curtain_front",
+      "lamp_glow",
+      "particles",
+      "lyric_overlay"
+    ]
+  },
+  "variation_knobs": [
+    "left_pose",
+    "right_pose",
+    "left_gaze",
+    "right_gaze",
+    "left_mouth",
+    "right_mouth",
+    "camera_push",
+    "camera_pan",
+    "actor_spacing",
+    "light_intensity",
+    "particle_density"
+  ],
+  "good_for": [
+    "chorus",
+    "slow dance",
+    "embrace",
+    "romantic climax"
+  ],
+  "avoid": [
+    "trying to fake continuous limb animation from one pose",
+    "scene images that already contain the recurring actors"
+  ],
+  "selection_examples": [
+    "intimate verse: gaze=partner mouth=closed/smile",
+    "chorus: one or both actors mouth=singing_open while body type remains standing/standing_close",
+    "sustained climax: mouth=hold_note with minimal body-state change"
+  ]
+}

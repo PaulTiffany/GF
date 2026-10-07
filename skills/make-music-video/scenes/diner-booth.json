@@ -1,0 +1,40 @@
+{
+  "schema": 1,
+  "id": "diner-booth",
+  "character_free": true,
+  "required_assets": [
+    {"id": "diner_back", "role": "environment", "z": 10},
+    {"id": "booth_back", "role": "set", "z": 20},
+    {"id": "table_front", "role": "occluder", "z": 40}
+  ],
+  "optional_assets": [
+    {"id": "window_rain", "role": "weather", "z": 50},
+    {"id": "neon_reflection", "role": "lighting", "z": 60}
+  ],
+  "actor_slots": [
+    {
+      "id": "left_seat",
+      "accepts": ["seated_table", "seated"],
+      "anchor": {"x": 0.38, "y": 0.58},
+      "scale": 0.36,
+      "facing": "right_three_quarter",
+      "z": 30,
+      "occluded_by": ["table_front"]
+    },
+    {
+      "id": "right_seat",
+      "accepts": ["seated_table", "seated"],
+      "anchor": {"x": 0.62, "y": 0.58},
+      "scale": 0.34,
+      "facing": "left_three_quarter",
+      "z": 31,
+      "occluded_by": ["table_front"]
+    }
+  ],
+  "motion_defaults": {
+    "environment": "hold",
+    "actors": "hold_pose",
+    "camera": "slow_push",
+    "weather": "window_only"
+  }
+}

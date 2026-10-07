@@ -1,0 +1,11 @@
+{
+  "schema": 1,
+  "actor_id": "paul-bear",
+  "source": "media/paul-bear-driving-2x2.png",
+  "poses": [
+    {"id": "driving_forward", "type": "seated_driver"},
+    {"id": "look_at_partner", "type": "seated_driver"},
+    {"id": "lean_close", "type": "seated_driver"},
+    {"id": "phone_glance", "type": "seated_driver"}
+  ]
+}

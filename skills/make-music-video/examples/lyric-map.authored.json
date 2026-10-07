@@ -1,0 +1,47 @@
+{
+  "schema": 1,
+  "id": "your-sugar-bear",
+  "timing_state": "authored",
+  "sections": [
+    {
+      "id": "verse-1",
+      "role": "verse",
+      "lines": [
+        {
+          "id": "v1-l1",
+          "text": "There's a road that runs between us",
+          "motifs": ["road"],
+          "vocal_mode": "intimate",
+          "timing": null
+        },
+        {
+          "id": "v1-l5",
+          "text": "One eleven, there's your message",
+          "motifs": ["1:11", "phone"],
+          "vocal_mode": "intimate",
+          "timing": null
+        }
+      ]
+    },
+    {
+      "id": "chorus-1",
+      "role": "chorus",
+      "lines": [
+        {
+          "id": "c1-l1",
+          "text": "Oh, Yvonne...",
+          "motifs": ["yvonne"],
+          "vocal_mode": "soaring",
+          "timing": null
+        },
+        {
+          "id": "c1-l5",
+          "text": "Two Sugar Bears",
+          "motifs": ["sugar-bear", "chorus-landmark"],
+          "vocal_mode": "soaring",
+          "timing": null
+        }
+      ]
+    }
+  ]
+}

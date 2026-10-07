@@ -1,0 +1,12 @@
+{
+  "schema": 2,
+  "actor_id": "paul-bear",
+  "pack_kind": "actor",
+  "source": "media/paul-bear-vocal-2x2.png",
+  "poses": [
+    {"id": "sing_closed", "type": "performance", "gaze": "audience", "mouth": "closed", "interaction": "microphone"},
+    {"id": "sing_open", "type": "performance", "gaze": "audience", "mouth": "singing_open", "interaction": "microphone"},
+    {"id": "hold_note", "type": "performance", "gaze": "offscreen_right", "mouth": "hold_note", "interaction": "microphone"},
+    {"id": "gesture", "type": "performance", "gaze": "audience", "mouth": "singing_open", "interaction": "microphone"}
+  ]
+}

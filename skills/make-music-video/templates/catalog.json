@@ -1,0 +1,10 @@
+{
+  "schema": 1,
+  "templates": [
+    {"id": "ballad-narrative", "file": "ballad-narrative.json", "use_for": ["ballad", "love song", "slow narrative"]},
+    {"id": "pop-hook", "file": "pop-hook.json", "use_for": ["pop", "Claude Pop", "hook-driven", "comedy"]},
+    {"id": "ambient-sonification", "file": "ambient-sonification.json", "use_for": ["ambient", "instrumental", "sonification", "environmental"]}
+  ],
+  "renderer_motion": ["static", "push_in", "pull_out", "pan_left", "pan_right"],
+  "renderer_transition": ["cut", "fade_black"]
+}

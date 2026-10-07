@@ -21,6 +21,88 @@ Package references stay inside the package. Repository checks are indexed
 separately so a copied build can operate without GF's test harness. Adding a
 build does not require changing the catalogue program.
 
+## Select, materialize, refine
+
+A certified skill should minimize how much task state and procedure the next
+assistant must reconstruct in working memory.
+
+Prefer this control pattern:
+
+1. **Select** — choose from a bounded vocabulary of known-good strategies,
+   templates, archetypes, or object types.
+2. **Materialize** — turn that choice into a typed object or manifest with
+   explicit structure and defaults.
+3. **Inspect** — reason about the concrete object rather than reopening the
+   entire task.
+4. **Refine** — descend into one mechanic only when needed. The skill should
+   point to the tool/helper with the strongest affordance for that mechanic.
+5. **Verify** — return receipts, checks, evidence, or observed delivery state.
+6. **Compose** — return the refined object to the larger workflow without
+   discarding already-established state.
+
+This is **selectors over generators**, not selectors instead of reasoning.
+Generative reasoning remains valuable at semantic decision points; fragile
+geometry, bookkeeping, file handling, timing, protocol details, and other solved
+mechanics should increasingly collapse into validated objects and helpers.
+
+### Objects are refinement handles
+
+Once a selector produces an object, that object should expose the smallest useful
+refinement surface. Examples:
+
+| Object | Valuable reasoning | Prefer to delegate |
+| --- | --- | --- |
+| Scene | mood, narrative role, desired interaction | coordinates, z-order, occlusion checks |
+| Actor pack | expression, gaze, vocal/action state | fixed-grid slicing, slot compatibility |
+| Lyric map | motif importance, section meaning | caption bookkeeping, alignment exports |
+| Manim treatment | spatial metaphor, attention path | deterministic geometry/timing compilation |
+| Final render | editorial judgement | encoding, stream/duration/hash verification |
+
+A skill should name the preferred toolset for each refinement surface. Future
+assistants should not need to remember from scratch that Manim is good at
+deterministic spatial typography, FFmpeg at assembly/verification, or a package
+helper at validating a local contract; the skill carries that procedural memory.
+
+### Prefer host-native capability
+
+When several mechanics can satisfy the same refinement, prefer the strongest
+**adequate** capability already present in the current host before introducing a
+new model, runtime, service, or dependency. Availability never substitutes for
+observability: a cheaper tool that cannot observe the property being certified is
+not an adequate fallback.
+
+A useful escalation order is:
+
+1. existing package helper;
+2. existing host/runtime library or command-line tool;
+3. already-connected provider/tool;
+4. lightweight new dependency;
+5. new model/service only when the required precision or capability justifies it.
+
+This is a cognitive-load rule as much as a cost rule. Future assistants should
+not spend context reconstructing installation, authentication, provider quirks,
+or fallback logic when an adequate local mechanic already exists.
+
+Record when a higher rung is genuinely required; do not silently promote an
+optional dependency into the skill's default path.
+
+### Cognitive-load test
+
+During review, ask:
+
+- Is the assistant being asked to choose something semantic, or merely remember
+  solved mechanics?
+- Can an open-ended prompt become a bounded selector?
+- Can the selection become a typed object that preserves state?
+- Does that object expose a clear next refinement surface?
+- Does the skill point first to the best already-available tool/helper for that refinement?
+- Does later work consume prior structured state rather than infer it again?
+- Are defaults backed by evidence, tests, or explicit operator judgement?
+- Can a custom escape hatch remain available without making it the default path?
+
+The common path should be cheap to reason about; deeper expertise should remain
+reachable by descending through the selected object.
+
 ## Equip and execute
 
 1. Choose a build with `python catalog.py list`.

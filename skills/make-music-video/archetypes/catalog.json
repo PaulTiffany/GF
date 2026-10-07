@@ -1,0 +1,101 @@
+{
+  "schema": 1,
+  "archetypes": [
+    {
+      "id": "driving-loop",
+      "file": "driving-loop.json",
+      "use_for": [
+        "travel",
+        "verse",
+        "instrumental",
+        "road motif"
+      ]
+    },
+    {
+      "id": "slow-dance-loop",
+      "file": "slow-dance-loop.json",
+      "use_for": [
+        "romance",
+        "chorus",
+        "bridge"
+      ]
+    },
+    {
+      "id": "window-rain",
+      "file": "window-rain.json",
+      "use_for": [
+        "introspection",
+        "verse",
+        "pre-chorus"
+      ]
+    },
+    {
+      "id": "lyric-cloud",
+      "file": "lyric-cloud.json",
+      "use_for": [
+        "lyric emphasis",
+        "bridge",
+        "hook",
+        "abstract section"
+      ]
+    },
+    {
+      "id": "diner-conversation",
+      "file": "diner-conversation.json",
+      "use_for": [
+        "verse",
+        "intimacy",
+        "conversation",
+        "memory"
+      ]
+    },
+    {
+      "id": "bedside-intimacy",
+      "file": "bedside-intimacy.json",
+      "use_for": [
+        "bridge",
+        "vulnerability",
+        "outro"
+      ]
+    },
+    {
+      "id": "standing-romance",
+      "file": "standing-romance.json",
+      "use_for": [
+        "chorus",
+        "slow dance",
+        "embrace",
+        "climax"
+      ]
+    },
+    {
+      "id": "performance-guitar",
+      "file": "performance-guitar.json",
+      "use_for": [
+        "guitar solo",
+        "instrumental",
+        "performance"
+      ]
+    },
+    {
+      "id": "message-motif",
+      "file": "message-motif.json",
+      "use_for": [
+        "1:11",
+        "text message",
+        "recurring motif",
+        "transition"
+      ]
+    },
+    {
+      "id": "performance-vocal",
+      "file": "performance-vocal.json",
+      "use_for": [
+        "chorus",
+        "bridge",
+        "vocal climax",
+        "performance"
+      ]
+    }
+  ]
+}

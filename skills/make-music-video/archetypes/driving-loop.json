@@ -1,0 +1,83 @@
+{
+  "schema": 1,
+  "id": "driving-loop",
+  "idea": "Build a driving scene from independent layers: moving environment, car prop/set, driver actor, passenger actor, front-of-actor occluders such as dashboard/glass, and optional weather/light/foreground motion.",
+  "inputs": {
+    "required": [
+      "character_free_scene_kit_for_car-front-seat",
+      "driver_actor_pack_4pose",
+      "passenger_actor_pack_4pose"
+    ],
+    "optional": [
+      "glass_or_dashboard_occluder",
+      "foreground_blur",
+      "rain_overlay",
+      "light_sweeps",
+      "lyric_overlay"
+    ]
+  },
+  "composition": [
+    {
+      "layer": "environment",
+      "behavior": "scroll_or_pan_loop",
+      "notes": "Road/city/landscape moves behind the scene. Prefer a loopable or long plate."
+    },
+    {
+      "layer": "car",
+      "behavior": "persistent_prop",
+      "notes": "Car or car-interior set is independent from the bears and can bob/scale/shift as a whole."
+    },
+    {
+      "layer": "driver",
+      "behavior": "placed_actor",
+      "notes": "Select one pose from the driver's four-pose sheet and place it into the car."
+    },
+    {
+      "layer": "passenger",
+      "behavior": "placed_actor",
+      "notes": "Select one pose independently from the passenger's four-pose sheet."
+    },
+    {
+      "layer": "occluders",
+      "behavior": "front_layer",
+      "notes": "Steering wheel, dashboard, windshield frame or glass can sit in front of actors for believable depth."
+    },
+    {
+      "layer": "foreground",
+      "behavior": "fast_parallax",
+      "notes": "Blurred poles, guardrails, rain, branches or light streaks sell speed."
+    },
+    {
+      "layer": "lighting",
+      "behavior": "periodic_sweep",
+      "notes": "Headlights, neon, moonlight or street lamps affect the scene without fusing asset roles."
+    }
+  ],
+  "variation_knobs": [
+    "background_scroll_speed",
+    "camera_crop",
+    "car_bob",
+    "driver_pose",
+    "passenger_pose",
+    "actor_placement",
+    "foreground_parallax_speed",
+    "rain_density",
+    "light_sweep_frequency",
+    "color_grade",
+    "lyric_or_motif_overlay"
+  ],
+  "reuse": "Use the character-free car-front-seat scene template plus two independent typed four-pose actor sheets. Match poses mechanically to driver/passenger slots before rendering.",
+  "good_for": [
+    "verses",
+    "instrumentals",
+    "transitions",
+    "recurring road motif"
+  ],
+  "avoid": [
+    "fusing bears into the car asset",
+    "using a whole-scene still when independent actor pose changes are needed",
+    "visible background seams",
+    "regenerating the whole scene for every shot"
+  ],
+  "scene_template": "../scenes/car-front-seat.json"
+}
